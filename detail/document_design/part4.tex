@@ -1,0 +1,821 @@
+\section{API design}
+
+\subsection{API Overview}
+
+ระบบใช้สถาปัตยกรรม RESTful API โดยมี Base URL คือ \texttt{/api/v1} 
+การยืนยันตัวตนใช้ JWT (JSON Web Token) ผ่าน Header: \texttt{Authorization: Bearer <token>}
+
+\subsection{Response Format มาตรฐาน}
+
+ทุก Response จะอยู่ในรูปแบบ JSON โดยมีโครงสร้างดังนี้:
+
+\begin{verbatim}
+{
+  "success": true/false,
+  "data": { ... },       // กรณีสำเร็จ
+  "error": {             // กรณีล้มเหลว
+    "code": "ERROR_CODE",
+    "message": "รายละเอียดข้อผิดพลาด"
+  }
+}
+\end{verbatim}
+
+\subsection{HTTP Status Codes}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c|l|}
+        \hline
+        \textbf{Status Code} & \textbf{ความหมาย} \\
+        \hline
+        200 OK & ดำเนินการสำเร็จ \\
+        \hline
+        201 Created & สร้างข้อมูลสำเร็จ \\
+        \hline
+        202 Accepted & รับคำขอแล้ว (สำหรับ Async Job) \\
+        \hline
+        400 Bad Request & ข้อมูลไม่ถูกต้อง \\
+        \hline
+        401 Unauthorized & ไม่ได้เข้าสู่ระบบ \\
+        \hline
+        403 Forbidden & ไม่มีสิทธิ์เข้าถึง \\
+        \hline
+        404 Not Found & ไม่พบข้อมูล \\
+        \hline
+        500 Internal Server Error & เกิดข้อผิดพลาดภายในระบบ \\
+        \hline
+    \end{tabular}
+    \caption{HTTP Status Codes ที่ใช้ใน API}
+    \label{tab:http_status}
+\end{table}
+
+\clearpage
+
+%% ==================== AUTHENTICATION ====================
+\subsection{Authentication API}
+
+\subsubsection{ลงทะเบียนผู้ใช้ใหม่ (Register)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{POST /api/v1/auth/register} \\
+        \hline
+        \textbf{Authentication} & ไม่ต้อง \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Request Body:}
+\begin{verbatim}
+{
+  "username": "string (required, unique)",
+  "password": "string (required, min 8 chars)"
+}
+\end{verbatim}
+
+\textbf{Response (201 Created):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "user_id": "uuid",
+    "username": "string",
+    "created_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\subsubsection{เข้าสู่ระบบ (Login)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{POST /api/v1/auth/login} \\
+        \hline
+        \textbf{Authentication} & ไม่ต้อง \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Request Body:}
+\begin{verbatim}
+{
+  "username": "string",
+  "password": "string"
+}
+\end{verbatim}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "access_token": "jwt_token",
+    "refresh_token": "jwt_token",
+    "expires_in": 3600,
+    "user": {
+      "user_id": "uuid",
+      "username": "string"
+    }
+  }
+}
+\end{verbatim}
+
+\subsubsection{ออกจากระบบ (Logout)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{POST /api/v1/auth/logout} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "message": "Logged out successfully"
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+%% ==================== FOLDER MANAGEMENT ====================
+\subsection{Folder Management API}
+
+\subsubsection{แสดงรายการโฟลเดอร์ทั้งหมด}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{GET /api/v1/folders} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "folders": [
+      {
+        "folder_id": 1,
+        "folder_name": "Experiment 2024-01",
+        "image_count": 25,
+        "created_at": "2024-01-15T10:30:00Z"
+      }
+    ],
+    "total": 10
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+\subsubsection{สร้างโฟลเดอร์ใหม่ (Create Folder)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{POST /api/v1/folders} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Request Body:}
+\begin{verbatim}
+{
+  "folder_name": "string (required)"
+}
+\end{verbatim}
+
+\textbf{Response (201 Created):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "folder_id": 1,
+    "folder_name": "string",
+    "created_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\subsubsection{แก้ไขชื่อโฟลเดอร์ (Rename Folder)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{PATCH /api/v1/folders/\{folder\_id\}} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Request Body:}
+\begin{verbatim}
+{
+  "folder_name": "string (new name)"
+}
+\end{verbatim}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "folder_id": 1,
+    "folder_name": "updated_name",
+    "created_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+\subsubsection{ลบโฟลเดอร์ (Delete Folder)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{DELETE /api/v1/folders/\{folder\_id\}} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{หมายเหตุ:} การลบโฟลเดอร์จะลบรูปภาพและผลการวิเคราะห์ทั้งหมดในโฟลเดอร์นั้นด้วย (Cascade Delete)
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "message": "Folder deleted successfully",
+    "deleted_images_count": 25
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+%% ==================== IMAGE MANAGEMENT ====================
+\subsection{Image Management API}
+
+\subsubsection{แสดงรายการรูปภาพในโฟลเดอร์}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{GET /api/v1/folders/\{folder\_id\}/images} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+        \textbf{Query Params} & \texttt{page=1\&limit=20} (optional) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "images": [
+      {
+        "image_id": 1,
+        "folder_id": 1,
+        "original_filename": "cell_001.jpg",
+        "file_size": 1024000,
+        "mime_type": "image/jpeg",
+        "has_analysis": true,
+        "metadata": {
+          "width": 1920,
+          "height": 1080
+        },
+        "uploaded_at": "datetime"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 100,
+      "total_pages": 5
+    }
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+\subsubsection{อัปโหลดรูปภาพ (Import Image)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{POST /api/v1/folders/\{folder\_id\}/images} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+        \textbf{Content-Type} & \texttt{multipart/form-data} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Request Body (multipart/form-data):}
+\begin{verbatim}
+file: <binary image data>
+\end{verbatim}
+
+\textbf{Response (201 Created):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "image_id": 1,
+    "folder_id": 1,
+    "original_filename": "cell_001.jpg",
+    "file_size": 1024000,
+    "mime_type": "image/jpeg",
+    "has_analysis": false,
+    "metadata": {
+      "width": 1920,
+      "height": 1080
+    },
+    "uploaded_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\subsubsection{ดูรายละเอียดรูปภาพ}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{GET /api/v1/images/\{image\_id\}} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "image_id": 1,
+    "folder_id": 1,
+    "original_filename": "cell_001.jpg",
+    "file_url": "/api/v1/images/1/file",
+    "file_size": 1024000,
+    "mime_type": "image/jpeg",
+    "metadata": {
+      "width": 1920,
+      "height": 1080,
+      "captured_at": "datetime"
+    },
+    "analysis_history": [
+      {
+        "job_id": 1,
+        "status": "completed",
+        "ai_model_version": "v1.2.0",
+        "finished_at": "datetime"
+      }
+    ],
+    "uploaded_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\subsubsection{ลบรูปภาพ (Delete Image)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{DELETE /api/v1/images/\{image\_id\}} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{หมายเหตุ:} การลบรูปภาพจะลบ Jobs และ Analysis\_Results ที่เกี่ยวข้องด้วย
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "message": "Image deleted successfully"
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+\subsubsection{ขอ Presigned URL เพื่ออัปโหลด (Request Upload)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{POST /api/v1/folders/\{folder\_id\}/images/request-upload} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Request Body:}
+\begin{verbatim}
+{
+  "filename": "image.jpg",
+  "content_type": "image/jpeg",
+  "file_size": 1024000
+}
+\end{verbatim}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "upload_token": "unique_token_string",
+    "presigned_url": "https://s3.endpoint/bucket/key?signature...",
+    "expires_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\subsubsection{ยืนยันการอัปโหลด (Confirm Upload)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{POST /api/v1/folders/\{folder\_id\}/images/confirm-upload} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Request Body:}
+\begin{verbatim}
+{
+  "upload_token": "unique_token_string",
+  "filename": "image.jpg",
+  "content_type": "image/jpeg",
+  "file_size": 1024000
+}
+\end{verbatim}
+
+\textbf{Response (201 Created):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "image_id": 1,
+    "folder_id": 1,
+    "original_filename": "image.jpg",
+    "file_size": 1024000,
+    "mime_type": "image/jpeg",
+    "has_analysis": false,
+    "uploaded_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+\subsubsection{ขอ Presigned URL เพื่อดาวน์โหลด (Get Download URL)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{GET /api/v1/images/\{image\_id\}/download-url} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "url": "https://s3.endpoint/bucket/key?signature...",
+    "expires_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\subsubsection{รายการรูปภาพแบบ V2 (Cursor Pagination)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{GET /api/v2/folders/\{folder\_id\}/images} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+        \textbf{Query Params} & \texttt{cursor=timestamp\&limit=20} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "images": [ ... ],
+    "pagination": {
+      "has_next": true,
+      "next_cursor": "2024-01-24T10:00:00Z",
+      "count": 20
+    }
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+%% ==================== AI ANALYSIS ====================
+\subsection{AI Analysis API}
+
+\subsubsection{ส่งภาพเข้าวิเคราะห์ (Analyze Image)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{POST /api/v1/images/\{image\_id\}/analyze} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{หมายเหตุ:} API นี้เป็นแบบ Asynchronous โดยจะตอบกลับทันทีด้วย 202 Accepted และ job\_id สำหรับติดตามสถานะ
+
+\textbf{Request Body (optional):}
+\begin{verbatim}
+{
+  "model_version": "v1.2.0"  // default: latest
+}
+\end{verbatim}
+
+\textbf{Response (202 Accepted):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "job_id": 1,
+    "image_id": 1,
+    "status": "pending",
+    "ai_model_version": "v1.2.0",
+    "status_url": "/api/v1/jobs/1",
+    "created_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+\subsubsection{ตรวจสอบสถานะ Job (Check Job Status)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{GET /api/v1/jobs/\{job\_id\}} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response - กำลังประมวลผล (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "job_id": 1,
+    "image_id": 1,
+    "status": "processing",
+    "ai_model_version": "v1.2.0",
+    "started_at": "datetime",
+    "progress_percent": 45
+  }
+}
+\end{verbatim}
+
+\textbf{Response - เสร็จสมบูรณ์ (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "job_id": 1,
+    "image_id": 1,
+    "status": "completed",
+    "ai_model_version": "v1.2.0",
+    "started_at": "datetime",
+    "finished_at": "datetime",
+    "result_url": "/api/v1/jobs/1/result"
+  }
+}
+\end{verbatim}
+
+\textbf{Response - ล้มเหลว (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "job_id": 1,
+    "image_id": 1,
+    "status": "failed",
+    "error_message": "Model inference timeout",
+    "started_at": "datetime",
+    "finished_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+\subsubsection{ดูผลการวิเคราะห์ (Get Analysis Result)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{GET /api/v1/jobs/\{job\_id\}/result} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "result_id": 1,
+    "job_id": 1,
+    "image_id": 1,
+    "counts": {
+      "viable": 150,
+      "apoptosis": 23,
+      "other": 8
+    },
+    "total_cells": 181,
+    "avg_confidence_score": 0.92,
+    "percentages": {
+      "viable": 82.87,
+      "apoptosis": 12.71,
+      "other": 4.42
+    },
+    "raw_data": {
+      "bounding_boxes": [
+        {
+          "class": "viable",
+          "confidence": 0.95,
+          "x": 100, "y": 200,
+          "width": 50, "height": 50
+        }
+      ]
+    },
+    "summary_data": "พบเซลล์ทั้งหมด 181 เซลล์ ...",
+    "analyzed_at": "datetime"
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+\subsubsection{ดูประวัติการวิเคราะห์ของรูปภาพ (Image Analysis History)}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Endpoint} & \texttt{GET /api/v1/images/\{image\_id\}/analysis-history} \\
+        \hline
+        \textbf{Authentication} & ต้อง (Bearer Token) \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Response (200 OK):}
+\begin{verbatim}
+{
+  "success": true,
+  "data": {
+    "image_id": 1,
+    "analyses": [
+      {
+        "job_id": 2,
+        "status": "completed",
+        "ai_model_version": "v1.3.0",
+        "counts": {
+          "viable": 155,
+          "apoptosis": 20,
+          "other": 6
+        },
+        "avg_confidence_score": 0.94,
+        "finished_at": "2024-01-20T14:30:00Z"
+      },
+      {
+        "job_id": 1,
+        "status": "completed",
+        "ai_model_version": "v1.2.0",
+        "counts": {
+          "viable": 150,
+          "apoptosis": 23,
+          "other": 8
+        },
+        "avg_confidence_score": 0.92,
+        "finished_at": "2024-01-15T10:30:00Z"
+      }
+    ],
+    "total": 2
+  }
+}
+\end{verbatim}
+
+\clearpage
+
+%% ==================== API SUMMARY TABLE ====================
+\subsection{สรุปตาราง API Endpoints}
+
+\begin{table}[h!]
+    \centering
+    \small
+    \begin{tabular}{|l|l|l|p{4cm}|}
+        \hline
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Auth} & \textbf{Description} \\
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Authentication}} \\
+        \hline
+        POST & /auth/register & No & ลงทะเบียนผู้ใช้ใหม่ \\
+        POST & /auth/login & No & เข้าสู่ระบบ \\
+        POST & /auth/logout & Yes & ออกจากระบบ \\
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Folder Management}} \\
+        \hline
+        GET & /folders & Yes & รายการโฟลเดอร์ทั้งหมด \\
+        POST & /folders & Yes & สร้างโฟลเดอร์ใหม่ \\
+        PATCH & /folders/\{id\} & Yes & แก้ไขชื่อโฟลเดอร์ \\
+        DELETE & /folders/\{id\} & Yes & ลบโฟลเดอร์ \\
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Image Management}} \\
+        \hline
+        \hline
+        GET & /folders/\{id\}/images & Yes & รายการภาพ (V1/V2) \\
+        POST & .../request-upload & Yes & ขอ URL อัปโหลด (S3) \\
+        POST & .../confirm-upload & Yes & ยืนยันการอัปโหลด \\
+        GET & .../download-url & Yes & ขอ URL ดาวน์โหลด (S3) \\
+        GET & /images/\{id\} & Yes & รายละเอียดภาพ \\
+        DELETE & /images/\{id\} & Yes & ลบภาพ \\
+        \hline
+        \multicolumn{4}{|c|}{\textbf{AI Analysis}} \\
+        \hline
+        POST & /images/\{id\}/analyze & Yes & ส่งภาพเข้าวิเคราะห์ \\
+        GET & /jobs/\{id\} & Yes & ตรวจสอบสถานะ Job \\
+        GET & /jobs/\{id\}/result & Yes & ดูผลการวิเคราะห์ \\
+        GET & /images/\{id\}/analysis-history & Yes & ประวัติการวิเคราะห์ \\
+        \hline
+    \end{tabular}
+    \caption{สรุป API Endpoints ทั้งหมด (Base URL: /api/v1)}
+    \label{tab:api_summary}
+\end{table}

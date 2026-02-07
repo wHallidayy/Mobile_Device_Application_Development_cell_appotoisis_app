@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>file list</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #DAD5D2;
+            min-height: 100vh;
+        }
+
+        /* Header Navigation */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background-color: #DAD5D2;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #383837;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .user-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #383837;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Navbar Divider */
+        .navbar-divider {
+            width: 100%;
+            height: 1px;
+            background-color: #989993;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #383837;
+        }
+
+        .breadcrumb svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .breadcrumb-folder {
+            font-weight: 600;
+        }
+
+        /* Search and New Folder Row */
+        .action-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background-color: #E3E3E3;
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid #383837;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            outline: none;
+            color: #383837;
+        }
+
+        .search-box input::placeholder {
+            color: #91918E;
+        }
+
+        .search-box svg {
+            width: 20px;
+            height: 20px;
+            color: #8A929A;
+        }
+
+        .filter-icon {
+            margin-left: 12px;
+            cursor: pointer;
+        }
+
+        .new-folder-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #383837;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .new-folder-btn:hover {
+            background-color: #4a4a4a;
+        }
+
+        .new-folder-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* File List */
+        .file-list {
+            background-color: #DAD5D2;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* Table Header */
+        .table-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            background-color: #383837;
+            color: white;
+        }
+
+        .sort-icon {
+            display: flex;
+            flex-direction: column;
+            margin-right: 8px;
+        }
+
+        .sort-icon svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .header-name {
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        /* File Item */
+        .file-item {
+            border: 1px solid #8A929A;
+        }
+
+        .file-list {
+            border: 1px solid #8A929A;
+        }
+
+        .file-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            cursor: pointer;
+        }
+
+        .file-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .expand-icon {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.2s;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        .file-name {
+            font-weight: 500;
+            font-size: 15px;
+            color: #383837;
+        }
+
+        .file-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-analyzing {
+            background-color: #383837;
+            color: white;
+        }
+
+        .status-analyzing .spinner {
+            width: 14px;
+            height: 14px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .status-open {
+            background-color: #383837;
+            color: white;
+        }
+
+        .action-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            color: #383837;
+        }
+
+        /* File Content (Expanded) */
+        .file-content {
+            display: none;
+            padding: 0 20px 20px 20px;
+        }
+
+        .file-content.show {
+            display: block;
+        }
+
+        .content-wrapper {
+            display: flex;
+            gap: 20px;
+        }
+
+        .thumbnail {
+            width: 140px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Placeholder for analyzing state */
+        .analyzing-placeholder {
+            flex: 1;
+        }
+
+        .placeholder-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .placeholder-bar {
+            height: 20px;
+            background-color: #B4B4B4;
+            border-radius: 4px;
+        }
+
+        .placeholder-bar.w1 {
+            width: 60px;
+        }
+
+        .placeholder-bar.w2 {
+            width: 50px;
+        }
+
+        .placeholder-bar.w3 {
+            width: 70px;
+        }
+
+        .placeholder-bar.w4 {
+            width: 40px;
+        }
+
+        .placeholder-bar.w5 {
+            width: 80px;
+        }
+
+        .placeholder-bar.w6 {
+            width: 55px;
+        }
+
+        .placeholder-bar.w7 {
+            width: 90px;
+        }
+
+        .placeholder-bar.w8 {
+            width: 65px;
+        }
+
+        /* Analysis Results */
+        .analysis-results {
+            flex: 1;
+        }
+
+        .cell-stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 16px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .stat-label.apoptosis {
+            color: #E66C70;
+        }
+
+        .stat-label.normal {
+            color: #5E8E85;
+        }
+
+        .stat-label.other {
+            color: #666;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .stat-value.apoptosis {
+            color: #E66C70;
+        }
+
+        .stat-value.normal {
+            color: #2d9b87;
+        }
+
+        .stat-value.other {
+            color: #666;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            display: flex;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #8A929A;
+        }
+
+        .progress-segment {
+            height: 100%;
+        }
+
+        .progress-apoptosis {
+            background-color: #E66C70;
+        }
+
+        .progress-normal {
+            background-color: #2d9b87;
+        }
+
+        .progress-other {
+            background-color: #A3A9B0;
+        }
+
+        /* Total Counts */
+        .total-counts {
+            display: flex;
+            gap: 30px;
+        }
+
+        .count-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .count-label {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .count-divider {
+            width: 2px;
+            height: 20px;
+            background-color: #B4B4B4;
+        }
+
+        .count-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #383837;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            .thumbnail {
+                width: 100%;
+                height: 160px;
+            }
+
+            .cell-stats {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .total-counts {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-left">
+            <a href="#" class="nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z">
+                    </path>
+                    <polyline points="9 22 9 12 15 12 15 22">
+                    </polyline>
+                </svg>
+                Home
+            </a>
+            <a href="#" class="nav-item">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
+                    </path>
+                </svg>
+                Dashboard
+            </a>
+        </nav>
+        <div class="user-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2">
+                </path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Navbar Divider -->
+    <div class="navbar-divider"></div>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
+                </path>
+            </svg>
+            <span>Dashboard/</span>
+            <span class="breadcrumb-folder">folder_name</span>
+        </div>
+
+        <!-- Search and Actions -->
+        <div class="action-row">
+            <div class="search-box">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8">
+                    </circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65">
+                    </line>
+                </svg>
+                <input type="text" placeholder="">
+                <svg class="filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3">
+                    </polygon>
+                </svg>
+            </div>
+            <button class="new-folder-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
+                    </path>
+                    <line x1="12" y1="11" x2="12" y2="17">
+                    </line>
+                    <line x1="9" y1="14" x2="15" y2="14">
+                    </line>
+                </svg>
+                new folder
+            </button>
+        </div>
+
+        <!-- File List -->
+        <div class="file-list">
+            <!-- Table Header -->
+            <div class="table-header">
+                <div class="sort-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 14l5-5 5 5z">
+                        </path>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 10l5 5 5-5z">
+                        </path>
+                    </svg>
+                </div>
+                <span class="header-name">name</span>
+            </div>
+
+            <!-- File Item 1 - Analyzing -->
+            <div class="file-item">
+                <div class="file-header" onclick="toggleExpand(this)">
+                    <div class="file-header-left">
+                        <svg class="expand-icon expanded" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <polyline points="18 15 12 9 6 15">
+                            </polyline>
+                        </svg>
+                        <span class="file-name">file
+                            name</span>
+                    </div>
+                    <div class="file-header-right">
+                        <div class="status-badge status-analyzing">
+                            <svg class="spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 12a9 9 0 1 1-6.219-8.56">
+                                </path>
+                            </svg>
+                            Analyzing...
+                        </div>
+                        <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                            </path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="file-content show">
+                    <div class="content-wrapper">
+                        <div class="thumbnail">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='100' viewBox='0 0 140 100'%3E%3Crect fill='%231a1a40' width='140' height='100'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%234040ff'/%3E%3Ccircle cx='50' cy='45' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='70' cy='25' r='2' fill='%234040ff'/%3E%3Ccircle cx='90' cy='55' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='110' cy='35' r='2' fill='%234040ff'/%3E%3Ccircle cx='40' cy='70' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='80' cy='75' r='2' fill='%234040ff'/%3E%3Ccircle cx='100' cy='80' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='25' cy='50' r='1' fill='%234040ff'/%3E%3Ccircle cx='60' cy='60' r='1' fill='%234040ff'/%3E%3Ccircle cx='120' cy='60' r='1' fill='%234040ff'/%3E%3C/svg%3E"
+                                alt="Cell image">
+                        </div>
+                        <div class="analyzing-placeholder">
+                            <div class="placeholder-row">
+                                <div class="placeholder-bar w1">
+                                </div>
+                                <div class="placeholder-bar w2">
+                                </div>
+                                <div class="placeholder-bar w3">
+                                </div>
+                            </div>
+                            <div class="placeholder-row">
+                                <div class="placeholder-bar w4">
+                                </div>
+                                <div class="placeholder-bar w5">
+                                </div>
+                                <div class="placeholder-bar w6">
+                                </div>
+                                <div class="placeholder-bar w7">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Item 2 - With Results -->
+            <div class="file-item">
+                <div class="file-header" onclick="toggleExpand(this)">
+                    <div class="file-header-left">
+                        <svg class="expand-icon expanded" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <polyline points="18 15 12 9 6 15">
+                            </polyline>
+                        </svg>
+                        <span class="file-name">file
+                            name</span>
+                    </div>
+                    <div class="file-header-right">
+                        <div class="status-badge status-open">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6">
+                                </path>
+                                <polyline points="15 3 21 3 21 9">
+                                </polyline>
+                                <line x1="10" y1="14" x2="21" y2="3">
+                                </line>
+                            </svg>
+                            Open
+                            image
+                        </div>
+                        <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                            </path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="file-content show">
+                    <div class="content-wrapper">
+                        <div class="thumbnail">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='100' viewBox='0 0 140 100'%3E%3Crect fill='%231a1a40' width='140' height='100'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%234040ff'/%3E%3Ccircle cx='50' cy='45' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='70' cy='25' r='2' fill='%234040ff'/%3E%3Ccircle cx='90' cy='55' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='110' cy='35' r='2' fill='%234040ff'/%3E%3Ccircle cx='40' cy='70' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='80' cy='75' r='2' fill='%234040ff'/%3E%3Ccircle cx='100' cy='80' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='25' cy='50' r='1' fill='%234040ff'/%3E%3Ccircle cx='60' cy='60' r='1' fill='%234040ff'/%3E%3Ccircle cx='120' cy='60' r='1' fill='%234040ff'/%3E%3C/svg%3E"
+                                alt="Cell image">
+                        </div>
+                        <div class="analysis-results">
+                            <div class="cell-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label apoptosis">Apoptosis
+                                        cell</span>
+                                    <span class="stat-value apoptosis">20%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label normal">Normal
+                                        cell</span>
+                                    <span class="stat-value normal">70%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label other">Other
+                                        cell</span>
+                                    <span class="stat-value other">10%</span>
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-segment progress-apoptosis" style="width: 20%">
+                                    </div>
+                                    <div class="progress-segment progress-normal" style="width: 70%">
+                                    </div>
+                                    <div class="progress-segment progress-other" style="width: 10%">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="total-counts">
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        apoptosis
+                                        cell</span>
+
+                                    <span class="count-value">40</span>
+                                </div>
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        normal
+                                        cell</span>
+
+                                    <span class="count-value">140</span>
+                                </div>
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        normal
+                                        cell</span>
+
+                                    <span class="count-value">20</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Item 3 - Collapsed -->
+            <div class="file-item">
+                <div class="file-header" onclick="toggleExpand(this)">
+                    <div class="file-header-left">
+                        <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="18 15 12 9 6 15">
+                            </polyline>
+                        </svg>
+                        <span class="file-name">file
+                            name</span>
+                    </div>
+                    <div class="file-header-right">
+                        <div class="status-badge status-open">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6">
+                                </path>
+                                <polyline points="15 3 21 3 21 9">
+                                </polyline>
+                                <line x1="10" y1="14" x2="21" y2="3">
+                                </line>
+                            </svg>
+                            Open
+                            image
+                        </div>
+                        <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                            </path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="file-content">
+                    <div class="content-wrapper">
+                        <div class="thumbnail">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='100' viewBox='0 0 140 100'%3E%3Crect fill='%231a1a40' width='140' height='100'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%234040ff'/%3E%3Ccircle cx='50' cy='45' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='70' cy='25' r='2' fill='%234040ff'/%3E%3Ccircle cx='90' cy='55' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='110' cy='35' r='2' fill='%234040ff'/%3E%3C/svg%3E"
+                                alt="Cell image">
+                        </div>
+                        <div class="analysis-results">
+                            <div class="cell-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label apoptosis">Apoptosis
+                                        cell</span>
+                                    <span class="stat-value apoptosis">15%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label normal">Normal
+                                        cell</span>
+                                    <span class="stat-value normal">80%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label other">Other
+                                        cell</span>
+                                    <span class="stat-value other">5%</span>
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-segment progress-apoptosis" style="width: 15%">
+                                    </div>
+                                    <div class="progress-segment progress-normal" style="width: 80%">
+                                    </div>
+                                    <div class="progress-segment progress-other" style="width: 5%">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="total-counts">
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        apoptosis
+                                        cell</span>
+
+                                    <span class="count-value">30</span>
+                                </div>
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        normal
+                                        cell</span>
+
+                                    <span class="count-value">160</span>
+                                </div>
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        other
+                                        cell</span>
+
+                                    <span class="count-value">10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Item 4 - Collapsed -->
+            <div class="file-item">
+                <div class="file-header" onclick="toggleExpand(this)">
+                    <div class="file-header-left">
+                        <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="18 15 12 9 6 15">
+                            </polyline>
+                        </svg>
+                        <span class="file-name">file
+                            name</span>
+                    </div>
+                    <div class="file-header-right">
+                        <div class="status-badge status-open">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6">
+                                </path>
+                                <polyline points="15 3 21 3 21 9">
+                                </polyline>
+                                <line x1="10" y1="14" x2="21" y2="3">
+                                </line>
+                            </svg>
+                            Open
+                            image
+                        </div>
+                        <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                            </path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="file-content">
+                    <div class="content-wrapper">
+                        <div class="thumbnail">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='100' viewBox='0 0 140 100'%3E%3Crect fill='%231a1a40' width='140' height='100'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%234040ff'/%3E%3Ccircle cx='50' cy='45' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='70' cy='25' r='2' fill='%234040ff'/%3E%3Ccircle cx='90' cy='55' r='1.5' fill='%234040ff'/%3E%3Ccircle cx='110' cy='35' r='2' fill='%234040ff'/%3E%3C/svg%3E"
+                                alt="Cell image">
+                        </div>
+                        <div class="analysis-results">
+                            <div class="cell-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label apoptosis">Apoptosis
+                                        cell</span>
+                                    <span class="stat-value apoptosis">25%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label normal">Normal
+                                        cell</span>
+                                    <span class="stat-value normal">65%</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label other">Other
+                                        cell</span>
+                                    <span class="stat-value other">10%</span>
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-segment progress-apoptosis" style="width: 25%">
+                                    </div>
+                                    <div class="progress-segment progress-normal" style="width: 65%">
+                                    </div>
+                                    <div class="progress-segment progress-other" style="width: 10%">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="total-counts">
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        apoptosis
+                                        cell</span>
+
+                                    <span class="count-value">50</span>
+                                </div>
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        normal
+                                        cell</span>
+
+                                    <span class="count-value">130</span>
+                                </div>
+                                <div class="count-item">
+                                    <span class="count-label">Total
+                                        other
+                                        cell</span>
+
+                                    <span class="count-value">20</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+                                                                                                                                                                                                                                                                                                                                                                           ction toggleExpand(header) {
+            der.parentElement;
+                                                                                                                                                                                                                                                                                                                                                                   nst content = fileItem.querySelector('.file-content');
+            const icon = header.querySelector('.expand-icon');
+
+            content.classList.toggle('show');
+            icon.classList.toggle('expanded');
+        }
+    </script>
+</body>
+
+</html>

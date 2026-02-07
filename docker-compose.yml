@@ -1,0 +1,193 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME:-myproject}-backend
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    environment:
+      - RUST_LOG=info
+      # Server config
+      - SERVER__HOST=0.0.0.0
+      - SERVER__PORT=8080
+      # JWT config (using double underscore for nested config)
+      - JWT__SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      # Database config
+      - DATABASE__URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-cell_analysis}
+      # Storage config (S3/MinIO)
+      - STORAGE__ENDPOINT=http://minio:9000
+      - STORAGE__BUCKET=${STORAGE__BUCKET:-mybucket}
+      - STORAGE__PUBLIC_ENDPOINT=${STORAGE__PUBLIC_ENDPOINT:-http://localhost:9010}
+      - STORAGE__ACCESS_KEY=${STORAGE__ACCESS_KEY:-minioadmin}
+      - STORAGE__SECRET_KEY=${STORAGE__SECRET_KEY:-minioadmin}
+      - STORAGE__REGION=us-east-1
+      # RabbitMQ config
+      - RABBITMQ__HOST=rabbitmq
+      - RABBITMQ__PORT=5672
+      - RABBITMQ__USER=${RABBITMQ__USER:-rabbitmq}
+      - RABBITMQ__PASSWORD=${RABBITMQ__PASSWORD:-rabbitmq}
+      - RABBITMQ__ANALYSIS_QUEUE=analysis_jobs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ${PROJECT_NAME:-Cell_Analysis_Backend}-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      # ตั้งค่าให้ตรงกับ DATABASE__URL ใน .env
+      # postgres://postgres:postgres@localhost:5432/cell_analysis
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cell_analysis
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: ${PROJECT_NAME:-Cell_Analysis_Backend}-minio
+    ports:
+      # Port 9010 mapped to MinIO's internal 9000 (ports 9000-9003 are used by another process)
+      - "9010:9000"
+      - "9011:9001"
+    environment:
+      # Map ตัวแปรจาก .env (STORAGE__...) เข้าไปใน MinIO
+      MINIO_ROOT_USER: ${STORAGE__ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${STORAGE__SECRET_KEY:-minioadmin}
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  minio-setup:
+    image: minio/mc:latest
+    container_name: ${PROJECT_NAME:-Cell_Analysis_Backend}-minio-setup
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      # ใช้ตัวแปร STORAGE__* จาก .env
+      /usr/bin/mc alias set myminio http://minio:9000 ${STORAGE__ACCESS_KEY:-minioadmin} ${STORAGE__SECRET_KEY:-minioadmin};
+      /usr/bin/mc mb myminio/${STORAGE__BUCKET:-mybucket} --ignore-existing;
+      /usr/bin/mc anonymous set public myminio/${STORAGE__BUCKET:-mybucket};
+      # Configure CORS for browser uploads
+      echo '[{\"ID\":\"CORSRuleId1\",\"AllowedOrigins\":[\"*\"],\"AllowedMethods\":[\"GET\",\"PUT\",\"POST\",\"DELETE\",\"HEAD\"],\"AllowedHeaders\":[\"*\"],\"ExposeHeaders\":[\"ETag\",\"x-amz-meta-*\"],\"MaxAgeSeconds\":3600}]' > /tmp/cors.json;
+      /usr/bin/mc cors set myminio/${STORAGE__BUCKET:-mybucket} < /tmp/cors.json || true;
+      exit 0;
+      "
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: ${PROJECT_NAME:-Cell_Analysis_Backend}-rabbitmq
+    ports:
+      - "${RABBITMQ__PORT:-5672}:5672" # AMQP port
+      - "${RABBITMQ__MANAGEMENT_PORT:-15672}:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ__USER:-rabbitmq}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ__PASSWORD:-rabbitmq}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  model_worker:
+    build:
+      context: ./model_worker
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME:-Cell_Analysis_Backend}-model-worker
+    environment:
+      # RabbitMQ config
+      - RABBITMQ__HOST=rabbitmq
+      - RABBITMQ__PORT=5672
+      - RABBITMQ__USER=${RABBITMQ__USER:-rabbitmq}
+      - RABBITMQ__PASSWORD=${RABBITMQ__PASSWORD:-rabbitmq}
+      - RABBITMQ__ANALYSIS_QUEUE=analysis_jobs
+      # Storage config (S3/MinIO)
+      - STORAGE__ENDPOINT=http://minio:9000
+      - STORAGE__BUCKET=${STORAGE__BUCKET:-mybucket}
+      - STORAGE__ACCESS_KEY=${STORAGE__ACCESS_KEY:-minioadmin}
+      - STORAGE__SECRET_KEY=${STORAGE__SECRET_KEY:-minioadmin}
+      # Database config
+      - DATABASE__URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-cell_analysis}
+      # Model config
+      - MODEL_PATH=models/best.pt
+    volumes:
+      # Mount models directory to allow model updates without rebuild
+      - ./model_worker/models:/app/models:ro
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ${PROJECT_NAME:-Cell_Analysis_Backend}-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    profiles:
+      - tools
+
+volumes:
+  postgres-data:
+    name: ${PROJECT_NAME:-Cell_Analysis_Backend}-postgres-data
+  minio-data:
+    name: ${PROJECT_NAME:-Cell_Analysis_Backend}-minio-data
+  pgadmin-data:
+    name: ${PROJECT_NAME:-Cell_Analysis_Backend}-pgadmin-data
+  rabbitmq-data:
+    name: ${PROJECT_NAME:-myproject}-rabbitmq-data
+
+networks:
+  app-network:
+    name: ${PROJECT_NAME:-Cell_Analysis_Backend}-network
+    driver: bridge

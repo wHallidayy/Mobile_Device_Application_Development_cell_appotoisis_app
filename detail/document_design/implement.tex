@@ -1,0 +1,83 @@
+\section{Implementing Document Design}
+
+\subsection{Authentication System Implementation Guide}
+
+This section serves as a guide for implementing the authentication module in the Backend. The goal is not to copy-paste code, but to understand the \textbf{Clean Architecture} principles and \textbf{Security Standards} required for a modern secure web application.
+
+\subsubsection{Architecture Overview}
+The authentication module follows the Clean Architecture layers:
+\begin{enumerate}
+    \item \textbf{Domain Layer (`models/`, `dto/`)}: Defines the core data structures (`User`, `LoginRequest`).
+    \item \textbf{Repository Layer (`repositories/`)}: Handles direct database interactions (SQL).
+    \item \textbf{Service Layer (`services/`)}: Contains the business logic (Hashing, Token Generation).
+    \item \textbf{API Layer (`handlers/`)}: Handles HTTP requests and responses.
+\end{enumerate}
+
+\subsubsection{Key Technologies & Standards}
+\begin{itemize}
+    \item \textbf{Password Hashing}: We use \textbf{Argon2id}. It is the winner of the Password Hashing Competition and is memory-hard, making it resistant to GPU/ASIC attacks.
+    \item \textbf{Tokenization}: We use \textbf{PASETO} (Platform-Agnostic SEcurity TOkens), specifically version 4 (`v4.local`).
+    \begin{itemize}
+        \item \textbf{Why not JWT?} JWT (JSON Web Tokens) allows users to choose the algorithm (including "none"), leading to potential vulnerabilities. PASETO enforces secure algorithms (Ed25519 for public, ChaCha20Poly1305 for symmetric).
+    \end{itemize}
+    \item \textbf{Middleware}: We implement \textbf{OWASP ASVS} standards for access control.
+\end{itemize}
+
+\subsubsection{Implementation Hints (Step-by-Step)}
+
+\paragraph{Step 1: Define Your Data (Models \& DTOs)}
+\textit{Goal: Separate your Database entity from your API request/response.}
+\begin{itemize}
+    \item Create a `User` struct that matches your SQL table. \textbf{Hint}: Do NOT implement `Serialize` for this struct. Why? Because you might accidentally return the password hash to the frontend!
+    \item Create DTOs (Data Transfer Objects) for APIs: `RegisterRequest`, `LoginRequest`, `LoginResponse`. Use generic types like `ApiResponse<T>` to standardize your JSON output.
+\end{itemize}
+
+\paragraph{Step 2: Database Access (Repository)}
+\textit{Goal: Write SQL queries safely.}
+\begin{itemize}
+    \item Use `sqlx::query_as!` or `sqlx::query_as`.
+    \item \textbf{Hint}: Always use parameterized queries (`$1`, `$2`) to prevent SQL Injection. Never use `format!()` to build SQL strings with user input.
+    \item Functions needed: `create`, `find_by_username`, `username_exists`.
+\end{itemize}
+
+\paragraph{Step 3: Business Logic (Service)}
+\textit{Goal: Handle the "heavy lifting" logic.}
+\begin{itemize}
+    \item \textbf{Password Logic}: Import the `argon2` crate. You need a `SaltString` (random) and the password to generate a hash.
+    \item \textbf{Token Logic}: Use `rusty_paseto`.
+    \item \textbf{Hint}: Your login function should:
+    \begin{enumerate}
+        \item Find user by username (Repository).
+        \item Verify password hash (Argon2).
+        \item Generate Access Token (short-lived, e.g., 1 hour).
+        \item Generate Refresh Token (long-lived, e.g., 7 days).
+    \end{enumerate}
+\end{itemize}
+
+\paragraph{Step 4: The Guard (Middleware)}
+\textit{Goal: Protect your routes.}
+\begin{itemize}
+    \item Create an Actix middleware that intercepts requests.
+    \item Check the `Authorization` header. It should look like `Bearer <token>`.
+    \item Verify the PASETO token.
+    \item \textbf{Hint}: If valid, inject the `user_id` and `role` into `HttpExtensions` so your handlers can access them later.
+    \item \textbf{Research}: `actix_web::dev::Transform` and `actix_web::dev::Service`.
+\end{itemize}
+
+\paragraph{Step 5: The Entry Point (Handlers)}
+\textit{Goal: connect HTTP to Service.}
+\begin{itemize}
+    \item Write `register` and `login` async functions.
+    \item Use `web::Data` to access your Database Pool.
+    \item \textbf{Hint}: Use the `?` operator for error handling. Define a custom `ResponseError` so you don't have messy `match` statements everywhere.
+\end{itemize}
+
+\subsubsection{Research Keywords}
+To complete this implementation, you should research the following terms:
+\begin{itemize}
+    \item `rust argon2 implementation`
+    \item `rusty_paseto v4 local example`
+    \item `actix-web middleware transform trait`
+    \item `sqlx postgres connect pool`
+    \item `OWASP ASVS authentication requirement`
+\end{itemize}

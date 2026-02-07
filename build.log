@@ -1,0 +1,1275 @@
+time="2026-01-25T08:35:14+07:00" level=warning msg="/home/aekkawee/Develop/Rust/web/capstone_project/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-01-25T08:35:14+07:00" level=warning msg="Docker Compose requires buildx plugin to be installed"
+ Image capstone_project-model_worker Building 
+ Image capstone_project-backend Building 
+ Image capstone_project-model_worker Building 
+ Image capstone_project-backend Building 
+Sending build context to Docker daemon  68.64kB
+Step 1/16 : FROM rust:1.92 as builder
+ ---> 45dfd6a3b0ca
+Step 2/16 : WORKDIR /app
+ ---> Using cache
+ ---> 2f99eddfe1b8
+Step 3/16 : COPY Cargo.toml Cargo.lock ./
+ ---> Using cache
+ ---> 9d21f68b28f0
+Step 4/16 : COPY migrations ./migrations
+ ---> Using cache
+ ---> 247419ebfbff
+Step 5/16 : COPY src ./src
+ ---> Using cache
+ ---> 77a7eab00c67
+Step 6/16 : ENV SQLX_OFFLINE=true
+ ---> Using cache
+ ---> d5a8d2e69779
+Step 7/16 : RUN cargo build --release
+Sending build context to Docker daemon  524.4kBSending build context to Docker daemon  3.671MB ---> Running in c3bb0655563f
+Sending build context to Docker daemon  5.668MB
+Step 1/10 : FROM continuumio/miniconda3:latest
+ ---> 4f7df8586b44
+Step 2/10 : WORKDIR /app
+ ---> Using cache
+ ---> b5fe4c417739
+Step 3/10 : RUN apt-get update && apt-get install -y                     libgl1-mesa-glx                     libglib2.0-0                     libsm6                     libxext6                     libxrender-dev                     libpq-dev                     gcc                     g++                     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> f1272d2db537
+Step 4/10 : COPY requirements.txt .
+[91m    Updating crates.io index
+[0m ---> eaacddc2dc03
+Step 5/10 : RUN pip install --no-cache-dir -r requirements.txt
+ ---> Running in 811c8557a28f
+Collecting pika>=1.3.0 (from -r requirements.txt (line 2))
+  Downloading pika-1.3.2-py3-none-any.whl.metadata (13 kB)
+Collecting minio>=7.2.0 (from -r requirements.txt (line 5))
+  Downloading minio-7.2.20-py3-none-any.whl.metadata (6.5 kB)
+Collecting psycopg2-binary>=2.9.10 (from -r requirements.txt (line 8))
+  Downloading psycopg2_binary-2.9.11-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+Collecting ultralytics>=8.3.0 (from -r requirements.txt (line 11))
+  Downloading ultralytics-8.4.7-py3-none-any.whl.metadata (38 kB)
+Collecting python-dotenv>=1.0.0 (from -r requirements.txt (line 14))
+  Downloading python_dotenv-1.2.1-py3-none-any.whl.metadata (25 kB)
+Collecting pillow>=11.0.0 (from -r requirements.txt (line 15))
+  Downloading pillow-12.1.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+Collecting numpy<2.0.0,>=1.23.0 (from -r requirements.txt (line 16))
+  Downloading numpy-1.26.4.tar.gz (15.8 MB)
+[91m Downloading crates ...
+[0m[91m  Downloaded actix-multipart v0.7.2
+[0m[91m  Downloaded actix-codec v0.5.2
+[0m[91m  Downloaded actix-router v0.5.3
+[0m[91m  Downloaded actix-multipart-derive v0.7.0
+[0m[91m  Downloaded actix-macros v0.2.4
+[0m[91m  Downloaded actix-rt v2.11.0
+[0m[91m  Downloaded actix-cors v0.7.1
+[0m[91m  Downloaded actix-governor v0.5.0
+[0m[91m  Downloaded amq-protocol-types v7.2.3
+[0m[91m  Downloaded amq-protocol-tcp v7.2.3
+[0m[91m  Downloaded aws-creds v0.37.0
+[0m[91m  Downloaded anyhow v1.0.100
+[0m[91m  Downloaded aws-region v0.25.5
+[0m[91m  Downloaded atomic-waker v1.1.2
+[0m[91m  Downloaded foreign-types v0.3.2
+[0m[91m  Downloaded digest v0.9.0
+[0m[91m  Downloaded deranged v0.5.5
+[0m[91m  Downloaded async-global-executor-trait v2.2.0
+[0m[91m  Downloaded asn1-rs-derive v0.6.0
+[0m[91m  Downloaded amq-protocol-uri v7.2.3
+[0m[91m  Downloaded async-global-executor v3.1.0
+[0m[91m  Downloaded crypto-mac v0.8.0
+[0m[91m  Downloaded block-padding v0.3.3
+[0m[91m  Downloaded displaydoc v0.2.5
+[0m[91m  Downloaded der_derive v0.7.3
+[0m[91m  Downloaded digest v0.10.7
+[0m[91m  Downloaded crunchy v0.2.4
+[0m[91m  Downloaded cpufeatures v0.2.17
+[0m[91m  Downloaded crc v3.4.0
+[0m[91m  Downloaded cfg-if v1.0.4
+[0m[91m  Downloaded bytestring v1.5.0
+[0m[91m  Downloaded curve25519-dalek-derive v0.1.1
+[0m[91m  Downloaded crc-catalog v2.4.0
+[0m[91m  Downloaded const-random v0.1.18
+[0m[91m  Downloaded cipher v0.3.0
+[0m[91m  Downloaded darling_macro v0.20.11
+[0m[91m  Downloaded adler2 v2.0.1
+[0m[91m  Downloaded alloc-stdlib v0.2.2
+[0m[91m  Downloaded alloc-no-stdlib v2.0.4
+[0m[91m  Downloaded crossbeam-queue v0.3.12
+[0m[91m  Downloaded actix-utils v3.0.1
+[0m[91m  Downloaded atoi v2.0.0
+[0m[91m  Downloaded async-reactor-trait v1.1.0
+[0m[91m  Downloaded asn1-rs-impl v0.2.0
+[0m[91m  Downloaded crypto-common v0.1.7
+[0m[91m  Downloaded convert_case v0.4.0
+[0m[91m  Downloaded local-waker v0.1.4
+[0m[91m  Downloaded base64ct v1.8.3
+[0m[91m  Downloaded md-5 v0.10.6
+[0m[91m  Downloaded mime v0.3.17
+[0m[91m  Downloaded md5 v0.7.0
+[0m[91m  Downloaded async-executor v1.13.3
+[0m[91m  Downloaded async-channel v2.5.0
+[0m[91m  Downloaded jemallocator v0.5.4
+[0m[91m  Downloaded concurrent-queue v2.5.0
+[0m[91m  Downloaded bitflags v1.3.2
+[0m[91m  Downloaded inout v0.1.4
+[0m[91m  Downloaded heck v0.5.0
+[0m[91m  Downloaded data-encoding v2.10.0
+[0m[91m  Downloaded dashmap v5.5.3
+[0m[91m  Downloaded convert_case v0.6.0
+[0m[91m  Downloaded cbc v0.1.2
+[0m[91m  Downloaded const-random-macro v0.1.16
+[0m[91m  Downloaded byteorder v1.5.0
+[0m[91m  Downloaded block-buffer v0.10.4
+[0m[91m  Downloaded argon2 v0.5.3
+[0m[91m  Downloaded async-trait v0.1.89
+[0m[91m  Downloaded lock_api v0.4.14
+[0m[91m  Downloaded actix-web-httpauth v0.8.2
+[0m[91m  Downloaded futures-io v0.3.31
+[0m[91m  Downloaded derive_more v0.99.20
+[0m[91m  Downloaded errno v0.3.14
+[0m[91m  Downloaded arraydeque v0.5.1
+[0m[91m  Downloaded amq-protocol v7.2.3
+[0m[91m  Downloaded chacha20 v0.8.2
+[0m[91m  Downloaded maybe-async v0.2.10
+[0m[91m  Downloaded convert_case v0.10.0
+[0m[91m  Downloaded blocking v1.6.2
+[0m[91m  Downloaded actix-web-codegen v4.3.0
+[0m[91m  Downloaded no-std-compat v0.4.1
+[0m[91m  Downloaded futures-core v0.3.31
+[0m[91m  Downloaded minidom v0.15.2
+[0m[91m  Downloaded mime_guess v2.0.5
+[0m[91m  Downloaded equivalent v1.0.2
+[0m[91m  Downloaded crossbeam-utils v0.8.21
+[0m[91m  Downloaded futures-sink v0.3.31
+[0m[91m  Downloaded fastrand v2.3.0
+[0m[91m  Downloaded executor-trait v2.1.2
+[0m[91m  Downloaded cookie v0.16.2
+[0m[91m  Downloaded crc32fast v1.5.0
+[0m[91m  Downloaded blake2 v0.10.6
+[0m[91m  Downloaded darling v0.20.11
+[0m[91m  Downloaded num-conv v0.1.0
+[0m[91m  Downloaded flagset v0.4.7
+[0m[91m  Downloaded cookie-factory v0.3.3
+[0m[91m  Downloaded blake2 v0.9.2
+[0m[91m  Downloaded openssl-probe v0.1.6
+[0m[91m  Downloaded openssl-macros v0.1.1
+[0m[91m  Downloaded num-iter v0.1.45
+[0m[91m  Downloaded nonzero_ext v0.3.0
+[0m[91m  Downloaded native-tls v0.2.14
+[0m[91m  Downloaded pbkdf2 v0.12.2
+[0m[91m  Downloaded pathdiff v0.2.3
+[0m[91m  Downloaded percent-encoding v2.3.2
+[0m[91m  Downloaded event-listener-strategy v0.5.4
+[0m[91m  Downloaded parse-size v1.1.0
+[0m[91m  Downloaded fastrand v1.9.0
+[0m[91m  Downloaded form_urlencoded v1.2.2
+[0m[91m  Downloaded bitflags v2.10.0
+[0m[91m  Downloaded autocfg v1.5.0
+[0m[91m  Downloaded async-task v4.7.1
+[0m[91m  Downloaded async-lock v3.4.2
+[0m[91m  Downloaded async-lock v2.8.0
+[0m[91m  Downloaded async-io v1.13.0
+[0m[91m  Downloaded async-io v2.6.0
+[0m[91m  Downloaded const-oid v0.9.6
+[0m[91m  Downloaded config v0.15.19
+[0m[91m  Downloaded actix-server v2.6.0
+[0m[91m  Downloaded log v0.4.29
+[0m[91m  Downloaded futures-task v0.3.31
+[0m[91m  Downloaded futures-macro v0.3.31
+[0m[91m  Downloaded pinky-swear v6.2.1
+[0m[91m  Downloaded pin-utils v0.1.0
+[0m[91m  Downloaded piper v0.2.4
+[0m[91m  Downloaded fnv v1.0.7
+[0m[91m  Downloaded ordered-multimap v0.7.3
+[0m[91m  Downloaded oid-registry v0.8.1
+[0m[91m  Downloaded num-integer v0.1.46
+[0m[91m  Downloaded der-parser v10.0.0
+[0m[91m  Downloaded pem-rfc7468 v0.7.0
+[0m[91m  Downloaded doc-comment v0.3.4
+[0m[91m  Downloaded darling_core v0.20.11
+[0m[91m  Downloaded powerfmt v0.2.0
+[0m[91m  Downloaded bytes v1.11.0
+[0m[91m  Downloaded foreign-types-shared v0.1.1
+[0m[91m  Downloaded base64 v0.22.1
+[0m[91m  Downloaded base64 v0.13.1
+[0m[91m  Downloaded attohttpc v0.28.5
+[0m[91m  Downloaded proc-macro-error-attr2 v2.0.0
+[0m[91m  Downloaded potential_utf v0.1.4
+[0m[91m  Downloaded event-listener v2.5.3
+[0m[91m  Downloaded pin-project-lite v0.2.16
+[0m[91m  Downloaded pest_generator v2.8.5
+[0m[91m  Downloaded parking_lot v0.12.5
+[0m[91m  Downloaded ident_case v1.0.1
+[0m[91m  Downloaded reactor-trait v1.1.0
+[0m[91m  Downloaded rc2 v0.8.1
+[0m[91m  Downloaded rand_chacha v0.3.1
+[0m[91m  Downloaded pkg-config v0.3.32
+[0m[91m  Downloaded cc v1.2.53
+[0m[91m  Downloaded ppv-lite86 v0.2.21
+[0m[91m  Downloaded pest_derive v2.8.5
+[0m[91m  Downloaded local-channel v0.1.5
+[0m[91m  Downloaded quote v1.0.43
+[0m[91m  Downloaded miniz_oxide v0.8.9
+[0m[91m  Downloaded itoa v1.0.17
+[0m[91m  Downloaded rusticata-macros v4.1.0
+[0m[91m  Downloaded pkcs1 v0.7.5
+[0m[91m  Downloaded pest_meta v2.8.5
+[0m[91m  Downloaded parking_lot_core v0.9.12
+[0m[91m  Downloaded rustc_version v0.4.1
+[0m[91m  Downloaded rust-embed-utils v8.11.0
+[0m[91m  Downloaded rust-embed-impl v8.11.0
+[0m[91m  Downloaded once_cell v1.21.3
+[0m[91m  Downloaded scrypt v0.11.0
+[0m[91m  Downloaded asn1-rs v0.7.1
+[0m[91m  Downloaded num-traits v0.2.19
+[0m[91m  Downloaded memchr v2.7.6
+[0m[91m  Downloaded http-body v0.4.6
+[0m[91m  Downloaded bumpalo v3.19.1
+[0m[91m  Downloaded allocator-api2 v0.2.21
+[0m[91m  Downloaded httpdate v1.0.3
+[0m[91m  Downloaded p12-keystore v0.1.5
+[0m[91m  Downloaded der v0.7.10
+[0m[91m  Downloaded scopeguard v1.2.0
+[0m[91m  Downloaded same-file v1.0.6
+[0m[91m  Downloaded salsa20 v0.10.2
+[0m[91m  Downloaded sha1 v0.10.6
+[0m[91m  Downloaded serde_urlencoded v0.7.1
+[0m[91m  Downloaded serde_spanned v1.0.4
+[0m[91m  Downloaded serde_plain v1.0.2
+[0m[91m  Downloaded rand_chacha v0.9.0
+[0m[91m  Downloaded pkcs5 v0.7.1
+[0m[91m  Downloaded proc-macro-error2 v2.0.1
+[0m[91m  Downloaded polling v2.8.0
+[0m[91m  Downloaded rust-ini v0.21.3
+[0m[91m  Downloaded openssl-sys v0.9.111
+[0m[91m  Downloaded impl-more v0.1.9
+[0m[91m  Downloaded semver v1.0.27
+[0m[91m  Downloaded pkcs8 v0.10.2
+[0m[91m  Downloaded serde-untagged v0.1.9
+[0m[91m  Downloaded signature v2.2.0
+[0m[91m  Downloaded proc-macro2 v1.0.105
+[0m[91m  Downloaded actix-http v3.11.2
+[0m[91m  Downloaded rustls-pki-types v1.14.0
+[0m[91m  Downloaded erased-serde v0.3.31
+[0m[91m  Downloaded shlex v1.3.0
+[0m[91m  Downloaded aes v0.8.4
+[0m[91m  Downloaded sqlx-macros-core v0.8.6
+[0m[91m  Downloaded spki v0.7.3
+[0m[91m  Downloaded stable_deref_trait v1.2.1
+[0m[91m  Downloaded pkcs12 v0.1.0
+[0m[91m  Downloaded mio v1.1.1
+[0m[91m  Downloaded nom v7.1.3
+[0m[91m  Downloaded minimal-lexical v0.2.1
+[0m[91m  Downloaded slab v0.4.11
+[0m[91m  Downloaded generic-array v0.14.7
+[0m[91m  Downloaded tcp-stream v0.28.0
+[0m[91m  Downloaded subtle v2.6.1
+[0m[91m  Downloaded signal-hook-registry v1.4.8
+[0m[91m  Downloaded time-core v0.1.7
+[0m[91m  Downloaded serde_derive v1.0.228
+[0m[91m  Downloaded tinyvec_macros v0.1.1
+[0m[91m  Downloaded stringprep v0.1.5
+[0m[91m  Downloaded static_assertions v1.1.0
+[0m[91m  Downloaded smartstring v1.0.1
+[0m[91m  Downloaded smallvec v1.15.1
+[0m[91m  Downloaded tower-service v0.3.3
+[0m[91m  Downloaded idna_adapter v1.2.1
+[0m[91m  Downloaded rand v0.8.5
+[0m[91m  Downloaded synstructure v0.13.2
+[0m[91m  Downloaded ryu v1.0.22
+[0m[91m  Downloaded hex v0.4.3
+[0m[91m  Downloaded thiserror-impl v2.0.17
+[0m[91m  Downloaded thiserror v2.0.17
+[0m[91m  Downloaded time-macros v0.2.25
+[0m[91m  Downloaded rust-s3 v0.35.1
+[0m[91m  Downloaded tokio-macros v2.6.0
+[0m[91m  Downloaded socket2 v0.6.1
+[0m[91m  Downloaded toml_datetime v0.7.5+spec-1.1.0
+[0m[91m  Downloaded tokio-native-tls v0.3.1
+[0m[91m  Downloaded tinystr v0.8.2
+[0m[91m  Downloaded unicode-xid v0.2.6
+[0m[91m  Downloaded typeid v1.0.3
+[0m[91m  Downloaded spinning_top v0.3.0
+[0m[91m  Downloaded socket2 v0.4.10
+[0m[91m  Downloaded rustls-webpki v0.103.9
+[0m[91m  Downloaded utf8_iter v1.0.4
+[0m[91m  Downloaded untrusted v0.9.0
+[0m[91m  Downloaded try-lock v0.2.5
+[0m[91m  Downloaded thiserror v1.0.69
+[0m[91m  Downloaded home v0.5.12
+[0m[91m  Downloaded socket2 v0.5.10
+[0m[91m  Downloaded serde v1.0.228
+[0m[91m  Downloaded pest v2.8.5
+[0m[91m  Downloaded aho-corasick v1.1.4
+[0m[91m  Downloaded rsa v0.9.10
+[0m[91m  Downloaded rand v0.9.2
+[0m[91m  Downloaded tracing-log v0.2.0
+[0m[91m  Downloaded tracing-attributes v0.1.31
+[0m[91m  Downloaded toml_parser v1.0.6+spec-1.1.0
+[0m[91m  Downloaded json5 v0.4.1
+[0m[91m  Downloaded version_check v0.9.5
+[0m[91m  Downloaded validator v0.20.0
+[0m[91m  Downloaded unicase v2.9.0
+[0m[91m  Downloaded regex-lite v0.1.8
+[0m[91m  Downloaded raw-cpuid v11.6.0
+[0m[91m  Downloaded opaque-debug v0.3.1
+[0m[91m  Downloaded tempfile v3.24.0
+[0m[91m  Downloaded parking v2.2.1
+[0m[91m  Downloaded cms v0.2.3
+[0m[91m  Downloaded want v0.3.1
+[0m[91m  Downloaded waker-fn v1.2.0
+[0m[91m  Downloaded brotli-decompressor v5.0.0
+[0m[91m  Downloaded tokio-stream v0.1.18
+[0m[91m  Downloaded tinyvec v1.10.0
+[0m[91m  Downloaded rxml_validation v0.9.1
+[0m[91m  Downloaded rustls-connector v0.20.2
+[0m[91m  Downloaded unicode-ident v1.0.22
+[0m[91m  Downloaded rxml v0.9.1
+[0m[91m  Downloaded sqlx-mysql v0.8.6
+[0m[91m  Downloaded zerofrom-derive v0.1.6
+[0m[91m  Downloaded yoke-derive v0.8.1
+[0m[91m  Downloaded zeroize_derive v1.4.3
+[0m[91m  Downloaded writeable v0.6.2
+[0m[91m  Downloaded walkdir v2.5.0
+[0m[91m  Downloaded zerofrom v0.1.6
+[0m[91m  Downloaded unicode-properties v0.1.4
+[0m[91m  Downloaded secrecy v0.8.0
+[0m[91m  Downloaded actix-service v2.0.3
+[0m[91m  Downloaded unicode-bidi v0.3.18
+[0m[91m  Downloaded toml v0.9.11+spec-1.1.0
+[0m[91m  Downloaded ron v0.12.0
+[0m[91m  Downloaded cipher v0.4.4
+[0m[91m  Downloaded zerovec-derive v0.11.2
+[0m[91m  Downloaded zeroize v1.8.2
+[0m[91m  Downloaded yoke v0.8.1
+[0m[91m  Downloaded typenum v1.19.0
+[0m[91m  Downloaded sqlx-core v0.8.6
+[0m[91m  Downloaded zstd v0.13.3
+[0m[91m  Downloaded zmij v1.0.14
+[0m[91m  Downloaded utoipa-swagger-ui v9.0.2
+[0m[91m  Downloaded utoipa v5.4.0
+[0m[91m  Downloaded lazy_static v1.5.0
+[0m[91m  Downloaded foldhash v0.1.5
+[0m[91m  Downloaded erased-serde v0.4.9
+[0m[91m  Downloaded uuid v1.19.0
+[0m[91m  Downloaded dotenvy v0.15.7
+[0m[91m  Downloaded yaml-rust2 v0.10.4
+[0m[91m  Downloaded iso8601 v0.4.2
+[0m[91m  Downloaded dlv-list v0.5.2
+[0m[91m  Downloaded zopfli v0.8.3
+[0m[91m  Downloaded sqlx-postgres v0.8.6
+[0m[91m  Downloaded x509-parser v0.17.0
+[0m[91m  Downloaded jobserver v0.1.34
+[0m[91m  Downloaded zerotrie v0.2.3
+[0m[91m  Downloaded actix-web v4.12.1
+[0m[91m  Downloaded portable-atomic v1.13.0
+[0m[91m  Downloaded chrono v0.4.43
+[0m[91m  Downloaded thiserror-impl v1.0.69
+[0m[91m  Downloaded x509-cert v0.2.5
+[0m[91m  Downloaded rustls-webpki v0.102.8
+[0m[91m  Downloaded unicode-segmentation v1.12.0
+[0m[91m  Downloaded unicode-normalization v0.1.25
+[0m[91m  Downloaded tokio-util v0.7.18
+[0m[91m  Downloaded sqlx v0.8.6
+[0m[91m  Downloaded des v0.8.1
+[0m[91m  Downloaded derive_more v2.1.1
+[0m[91m  Downloaded curve25519-dalek v4.1.3
+[0m[91m  Downloaded zip v3.0.0
+[0m[91m  Downloaded zerovec v0.11.5
+[0m[91m  Downloaded utoipa-gen v5.4.0
+[0m[91m  Downloaded strsim v0.11.1
+[0m[91m  Downloaded nu-ansi-term v0.50.3
+[0m[91m  Downloaded openssl v0.10.75
+[0m[91m  Downloaded validator_derive v0.20.0
+[0m[91m  Downloaded winnow v0.7.14
+[0m[91m  Downloaded tracing-subscriber v0.3.22
+[0m[91m  Downloaded futures-executor v0.3.31
+[0m[91m  Downloaded vcpkg v0.2.15
+[0m[91m  Downloaded hashlink v0.10.0
+[0m[91m  Downloaded syn v2.0.114
+[0m[91m  Downloaded rustls v0.22.4
+[0m[91m  Downloaded regex-syntax v0.8.8
+[0m[91m  Downloaded zerocopy v0.8.33
+[0m[91m  Downloaded ucd-trie v0.1.7
+[0m[91m  Downloaded rustls v0.23.36
+[0m[91m  Downloaded rustix v1.1.3
+[0m[91m  Downloaded rusty_paseto v0.6.1
+[0m[91m  Downloaded futures-channel v0.3.31
+[0m[91m  Downloaded tracing v0.1.44
+[0m[91m  Downloaded hyper-tls v0.5.0
+[0m[91m  Downloaded regex-automata v0.4.13
+[0m[91m  Downloaded brotli v8.0.2
+[0m[91m  Downloaded rand_core v0.9.5
+[0m[91m  Downloaded rand_core v0.6.4
+[0m[91m  Downloaded rustls-pemfile v2.2.0
+[0m[91m  Downloaded rustls-native-certs v0.7.3
+[0m[91m  Downloaded zstd-sys v2.0.16+zstd.1.5.7
+[0m[91m  Downloaded sqlx-macros v0.8.6
+[0m[91m  Downloaded tokio v1.49.0
+[0m[91m  Downloaded litemap v0.8.1
+[0m[91m  Downloaded iana-time-zone v0.1.64
+[0m[91m  Downloaded io-lifetimes v1.0.11
+[0m[91m  Downloaded httparse v1.10.1
+[0m[91m  Downloaded futures-lite v1.13.0
+[0m[91m  Downloaded either v1.15.0
+[0m[91m  Downloaded ed25519 v2.2.3
+[0m[91m  Downloaded sha2 v0.10.9
+[0m[91m  Downloaded rust-embed v8.11.0
+[0m[91m  Downloaded thread_local v1.1.9
+[0m[91m  Downloaded derive_more-impl v2.1.1
+[0m[91m  Downloaded tiny-keccak v2.0.2
+[0m[91m  Downloaded whoami v1.6.1
+[0m[91m  Downloaded futures-timer v3.0.3
+[0m[91m  Downloaded zstd-safe v7.2.4
+[0m[91m  Downloaded futures-lite v2.6.1
+[0m[91m  Downloaded find-msvc-tools v0.1.8
+[0m[91m  Downloaded quanta v0.12.6
+[0m[91m  Downloaded getrandom v0.2.17
+[0m[91m  Downloaded event-listener v5.4.1
+[0m[91m  Downloaded icu_properties v2.1.2
+[0m[91m  Downloaded hmac v0.12.1
+[0m[91m  Downloaded spin v0.9.8
+[0m[91m  Downloaded icu_provider v2.1.1
+[0m[91m  Downloaded getrandom v0.3.4
+[0m[91m  Downloaded simd-adler32 v0.3.8
+[0m[91m  Downloaded language-tags v0.3.2
+[0m[91m  Downloaded polling v3.11.0
+[0m[91m  Downloaded password-hash v0.5.0
+[0m[91m  Downloaded sharded-slab v0.1.7
+[0m[91m  Downloaded flate2 v1.1.8
+[0m[91m  Downloaded serde_core v1.0.228
+[0m[91m  Downloaded icu_normalizer v2.1.1
+[0m[91m  Downloaded icu_normalizer_data v2.1.1
+[0m[91m  Downloaded tracing-core v0.1.36
+[0m[91m  Downloaded futures v0.3.31
+[0m[91m  Downloaded flume v0.11.1
+[0m[91m  Downloaded icu_locale_core v2.1.1
+[0m[91m  Downloaded ed25519-dalek v2.2.0
+[0m[91m  Downloaded icu_collections v2.1.1
+[0m[91m  Downloaded futures-intrusive v0.5.0
+[0m[91m  Downloaded indexmap v2.13.0
+[0m[91m  Downloaded http v1.4.0
+[0m[91m  Downloaded sqlx-sqlite v0.8.6
+[0m[91m  Downloaded url v2.5.8
+[0m[91m  Downloaded http v0.2.12
+[0m[91m  Downloaded num-bigint v0.4.6
+[0m[91m  Downloaded governor v0.6.3
+[0m[91m  Downloaded num-bigint-dig v0.8.6
+[0m[91m  Downloaded lapin v2.5.5
+[0m[91m  Downloaded serde_json v1.0.149
+[0m[91m  Downloaded hkdf v0.12.4
+[0m[91m  Downloaded libm v0.2.15
+[0m[91m  Downloaded idna v1.1.0
+[0m[91m  Downloaded hashbrown v0.16.1
+[0m[91m  Downloaded h2 v0.3.27
+[0m[91m  Downloaded regex v1.12.2
+[0m[91m  Downloaded hyper v0.14.32
+[0m[91m  Downloaded quick-xml v0.32.0
+[0m[91m  Downloaded icu_properties_data v2.1.2
+[0m[91m  Downloaded hashbrown v0.15.5
+[0m[91m  Downloaded hashbrown v0.14.5
+[0m[91m  Downloaded futures-util v0.3.31
+[0m[91m  Downloaded zlib-rs v0.5.5
+[0m[91m  Downloaded time v0.3.45
+[0m[91m  Downloaded rustix v0.37.28
+[0m[91m  Downloaded libc v0.2.180
+[0m[91m  Downloaded jemalloc-sys v0.5.4+5.3.0-patched
+[0m[91m  Downloaded linux-raw-sys v0.3.8
+[0m[91m  Downloaded encoding_rs v0.8.35
+[0m[91m  Downloaded ring v0.17.14
+[0m[91m  Downloaded linux-raw-sys v0.11.0
+[0m[91m  Downloaded libsqlite3-sys v0.30.1
+[0m[91m   Compiling proc-macro2 v1.0.105
+   Compiling unicode-ident v1.0.22
+   Compiling quote v1.0.43
+   Compiling libc v0.2.180
+   Compiling serde_core v1.0.228
+   Compiling cfg-if v1.0.4
+[0m[91m   Compiling serde v1.0.228
+[0m[91m   Compiling version_check v0.9.5
+[0m[91m   Compiling typenum v1.19.0
+[0m[91m   Compiling memchr v2.7.6
+[0m[91m   Compiling pin-project-lite v0.2.16
+[0m[91m   Compiling autocfg v1.5.0
+   Compiling find-msvc-tools v0.1.8
+[0m[91m   Compiling shlex v1.3.0
+   Compiling futures-core v0.3.31
+   Compiling once_cell v1.21.3
+[0m[91m   Compiling log v0.4.29
+[0m     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.8/15.8 MB 3.8 MB/s eta 0:00:00
+[91m   Compiling itoa v1.0.17
+[0m[91m   Compiling subtle v2.6.1
+[0m[91m   Compiling parking_lot_core v0.9.12
+[0m[91m   Compiling icu_normalizer_data v2.1.1
+[0m[91m   Compiling icu_properties_data v2.1.2
+[0m[91m   Compiling zmij v1.0.14
+[0m[91m   Compiling[0m[91m scopeguard v1.2.0
+[0m[91m   Compiling futures-io v0.3.31
+[0m[91m   Compiling stable_deref_trait v1.2.1
+[0m[91m   Compiling bytes v1.11.0
+[0m[91m   Compiling zerocopy v0.8.33
+[0m[91m   Compiling lock_api v0.4.14
+[0m[91m   Compiling serde_json v1.0.149
+[0m[91m   Compiling[0m[91m generic-array v0.14.7
+[0m[91m   Compiling[0m[91m cpufeatures v0.2.17
+[0m[91m   Compiling futures-sink v0.3.31
+[0m[91m   Compiling slab v0.4.11
+[0m[91m   Compiling[0m[91m pkg-config v0.3.32
+[0m[91m   Compiling tracing-core v0.1.36
+[0m[91m   Compiling writeable v0.6.2
+[0m[91m   Compiling litemap v0.8.1
+[0m[91m   Compiling getrandom v0.3.4
+[0m[91m   Compiling crossbeam-utils v0.8.21
+[0m[91m   Compiling percent-encoding v2.3.2
+[0m[91m   Compiling syn v2.0.114
+[0m[91m   Compiling time-core v0.1.7
+[0m[91m   Compiling powerfmt v0.2.0
+[0m[91m   Compiling num-conv v0.1.0
+[0m[91m   Compiling thiserror v2.0.17
+[0m[91m   Compiling form_urlencoded v1.2.2
+[0m[91m   Compiling time-macros v0.2.25
+[0m[91m   Compiling futures-channel v0.3.31
+[0m[91m   Compiling futures-task v0.3.31
+[0m[91m   Compiling pin-utils v0.1.0
+[0m[91m   Compiling[0m[91m utf8_iter v1.0.4
+[0m[91m   Compiling num-traits v0.2.19
+[0m[91m   Compiling errno v0.3.14
+[0m[91m   Compiling getrandom v0.2.17
+[0m[91m   Compiling socket2 v0.6.1
+[0m[91m   Compiling jobserver v0.1.34
+[0m[91m   Compiling[0m[91m mio v1.1.1
+[0m[91m   Compiling signal-hook-registry v1.4.8
+[0m[91m   Compiling[0m[91m crc32fast v1.5.0
+[0m[91m   Compiling parking v2.2.1
+[0m[91m   Compiling[0m[91m crypto-common v0.1.7
+[0m[91m   Compiling[0m[91m block-buffer v0.10.4
+[0m[91m   Compiling equivalent v1.0.2
+[0m[91m   Compiling concurrent-queue v2.5.0
+[0m[91m   Compiling[0m[91m cc v1.2.53
+[0m[91m   Compiling[0m[91m digest v0.10.7
+[0m[91m   Compiling sha2 v0.10.9
+[0m[91m   Compiling minimal-lexical v0.2.1
+[0m[91m   Compiling block-padding v0.3.3
+   Compiling rand_core v0.9.5
+[0m[91m   Compiling fnv v1.0.7
+[0m[91m   Compiling base64ct v1.8.3
+[0m[91m   Compiling[0m[91m nom v7.1.3
+[0m[91m   Compiling foldhash v0.1.5
+[0m[91m   Compiling http v0.2.12
+[0m[91m   Compiling inout v0.1.4
+[0m[91m   Compiling hashbrown v0.16.1
+[0m[91m   Compiling bitflags v2.10.0
+[0m[91m   Compiling deranged v0.5.5
+[0m[91m   Compiling cipher v0.4.4
+[0m[91m   Compiling hmac v0.12.1
+[0m[91m   Compiling sha1 v0.10.6
+[0m[91m   Compiling openssl-probe v0.1.6
+[0m[91m   Compiling vcpkg v0.2.15
+[0m  Installing build dependencies: started
+[91m   Compiling ppv-lite86 v0.2.21
+[0m[91m   Compiling[0m[91m httparse v1.10.1
+[0m[91m   Compiling pem-rfc7468 v0.7.0
+[0m[91m   Compiling[0m[91m const-oid v0.9.6
+[0m[91m   Compiling[0m[91m base64 v0.22.1
+[0m[91m   Compiling[0m[91m flagset v0.4.7
+[0m[91m   Compiling crunchy v0.2.4
+[0m[91m   Compiling untrusted v0.9.0
+[0m[91m   Compiling[0m[91m event-listener v5.4.1
+[0m[91m   Compiling socket2 v0.5.10
+[0m[91m   Compiling[0m[91m aho-corasick v1.1.4
+[0m[91m   Compiling[0m[91m rand_chacha v0.9.0
+[0m[91m   Compiling indexmap v2.13.0
+[0m[91m   Compiling unicode-segmentation v1.12.0
+[0m[91m   Compiling[0m[91m regex-syntax v0.8.8
+[0m[91m   Compiling tiny-keccak v2.0.2
+[0m[91m   Compiling[0m[91m rand v0.9.2
+[0m[91m   Compiling ring v0.17.14
+[0m[91m   Compiling zstd-sys v2.0.16+zstd.1.5.7
+[0m[91m   Compiling local-waker v0.1.4
+[0m[91m   Compiling openssl-sys v0.9.111
+[0m[91m   Compiling fastrand v2.3.0
+[0m[91m   Compiling alloc-no-stdlib v2.0.4
+[0m[91m   Compiling httpdate v1.0.3
+[0m[91m   Compiling[0m[91m zstd-safe v7.2.4
+[0m[91m   Compiling alloc-stdlib v0.2.2
+[0m[91m   Compiling time v0.3.45
+[0m[91m   Compiling rusticata-macros v4.1.0
+[0m[91m   Compiling convert_case v0.10.0
+[0m[91m   Compiling rand_core v0.6.4
+[0m[91m   Compiling[0m[91m encoding_rs v0.8.35
+[0m[91m   Compiling unicode-xid v0.2.6
+[0m[91m   Compiling adler2 v2.0.1
+[0m[91m   Compiling hex v0.4.3
+[0m[91m   Compiling[0m[91m rustix v1.1.3
+[0m[91m   Compiling[0m[91m simd-adler32 v0.3.8
+[0m[91m   Compiling brotli-decompressor v5.0.0
+[0m[91m   Compiling[0m[91m miniz_oxide v0.8.9
+[0m[91m   Compiling[0m[91m actix-utils v3.0.1
+[0m[91m   Compiling[0m[91m num-integer v0.1.46
+[0m[91m   Compiling bytestring v1.5.0
+[0m[91m   Compiling cookie v0.16.2
+[0m[91m   Compiling actix-service v2.0.3
+[0m[91m   Compiling regex-lite v0.1.8
+[0m[91m   Compiling foreign-types-shared v0.1.1
+[0m[91m   Compiling[0m[91m mime v0.3.17
+[0m[91m   Compiling lazy_static v1.5.0
+[0m[91m   Compiling oid-registry v0.8.1
+[0m[91m   Compiling openssl v0.10.75
+[0m[91m   Compiling linux-raw-sys v0.11.0
+[0m[91m   Compiling synstructure v0.13.2
+[0m[91m   Compiling[0m[91m hashbrown v0.14.5
+[0m[91m   Compiling regex-automata v0.4.13
+[0m[91m   Compiling brotli v8.0.2
+[0m[91m   Compiling flate2 v1.1.8
+[0m[91m   Compiling foreign-types v0.3.2
+[0m[91m   Compiling[0m[91m num-bigint v0.4.6
+[0m[91m   Compiling const-random-macro v0.1.16
+[0m[91m   Compiling local-channel v0.1.5
+[0m[91m   Compiling[0m[91m salsa20 v0.10.2
+[0m[91m   Compiling pbkdf2 v0.12.2
+[0m[91m   Compiling[0m[91m allocator-api2 v0.2.21
+[0m[91m   Compiling serde_derive v1.0.228
+[0m[91m   Compiling zerofrom-derive v0.1.6
+[0m[91m   Compiling[0m[91m yoke-derive v0.8.1
+[0m[91m   Compiling[0m[91m displaydoc v0.2.5
+[0m[91m   Compiling zerovec-derive v0.11.2
+[0m[91m   Compiling[0m[91m tracing-attributes v0.1.31
+[0m[91m   Compiling zeroize_derive v1.4.3
+[0m  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+[91m   Compiling tokio-macros v2.6.0
+[0m[91m   Compiling futures-macro v0.3.31
+[0m[91m   Compiling zeroize v1.8.2
+[0m  Getting requirements to build wheel: finished with status 'done'
+  Installing backend dependencies: started
+[91m   Compiling thiserror-impl v2.0.17
+[0m[91m   Compiling rustls-pki-types v1.14.0
+[0m[91m   Compiling der_derive v0.7.3
+[0m[91m   Compiling asn1-rs-impl v0.2.0
+[0m[91m   Compiling asn1-rs-derive v0.6.0
+[0m[91m   Compiling[0m[91m regex v1.12.2
+[0m[91m   Compiling[0m[91m zerofrom v0.1.6
+[0m[91m   Compiling futures-util v0.3.31
+[0m[91m   Compiling[0m[91m yoke v0.8.1
+[0m[91m   Compiling tracing v0.1.44
+[0m[91m   Compiling zerovec v0.11.5
+[0m[91m   Compiling zerotrie v0.2.3
+[0m[91m   Compiling derive_more-impl v2.1.1
+[0m[91m   Compiling async-trait v0.1.89
+[0m[91m   Compiling[0m[91m openssl-macros v0.1.1
+[0m[91m   Compiling[0m[91m der v0.7.10
+[0m[91m   Compiling native-tls v0.2.14
+[0m[91m   Compiling tinystr v0.8.2
+[0m[91m   Compiling[0m[91m potential_utf v0.1.4
+[0m  Installing backend dependencies: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+[91m   Compiling ryu v1.0.22
+[0m[91m   Compiling[0m[91m icu_collections v2.1.1
+[0m[91m   Compiling icu_locale_core v2.1.1
+[0m[91m   Compiling strsim v0.11.1
+[0m[91m   Compiling language-tags v0.3.2
+[0m[91m   Compiling asn1-rs v0.7.1
+[0m[91m   Compiling[0m[91m tinyvec_macros v0.1.1
+[0m[91m   Compiling[0m[91m ident_case v1.0.1
+[0m[91m   Compiling rustls v0.23.36
+[0m[91m   Compiling icu_provider v2.1.1
+[0m[91m   Compiling smallvec v1.15.1
+[0m[91m   Compiling icu_properties v2.1.2
+[0m[91m   Compiling[0m[91m spki v0.7.3
+[0m[91m   Compiling icu_normalizer v2.1.1
+[0m[91m   Compiling[0m[91m parking_lot v0.12.5
+[0m[91m   Compiling[0m[91m x509-cert v0.2.5
+[0m[91m   Compiling[0m[91m tokio v1.49.0
+[0m[91m   Compiling[0m[91m idna_adapter v1.2.1
+[0m[91m   Compiling idna v1.1.0
+[0m[91m   Compiling[0m[91m actix-router v0.5.3
+[0m[91m   Compiling hashbrown v0.15.5
+[0m[91m   Compiling[0m[91m derive_more v2.1.1
+[0m[91m   Compiling url v2.5.8
+[0m[91m   Compiling der-parser v10.0.0
+[0m[91m   Compiling serde_urlencoded v0.7.1
+[0m[91m   Compiling[0m[91m darling_core v0.20.11
+[0m[91m   Compiling tinyvec v1.10.0
+[0m[91m   Compiling actix-web-codegen v4.3.0
+[0m[91m   Compiling rustls-pemfile v2.2.0
+[0m[91m   Compiling cms v0.2.3
+[0m[91m   Compiling actix-macros v0.2.4
+[0m[91m   Compiling scrypt v0.11.0
+[0m[91m   Compiling const-random v0.1.18
+[0m[91m   Compiling rand_chacha v0.3.1
+[0m[91m   Compiling[0m[91m futures-lite v2.6.1
+[0m[91m   Compiling event-listener-strategy v0.5.4
+[0m[91m   Compiling[0m[91m cbc v0.1.2
+[0m[91m   Compiling aes v0.8.4
+[0m[91m   Compiling[0m[91m io-lifetimes v1.0.11
+[0m[91m   Compiling[0m[91m typeid v1.0.3
+[0m[91m   Compiling[0m[91m thiserror v1.0.69
+[0m[91m   Compiling semver v1.0.27
+[0m[91m   Compiling[0m[91m crc-catalog v2.4.0
+[0m[91m   Compiling impl-more v0.1.9
+[0m[91m   Compiling[0m[91m ucd-trie v0.1.7
+[0m[91m   Compiling data-encoding v2.10.0
+[0m[91m   Compiling iana-time-zone v0.1.64
+[0m[91m   Compiling pest v2.8.5
+[0m[91m   Compiling chrono v0.4.43
+[0m[91m   Compiling rustc_version v0.4.1
+[0m[91m   Compiling x509-parser v0.17.0
+[0m[91m   Compiling[0m[91m crc v3.4.0
+[0m[91m   Compiling[0m[91m pkcs5 v0.7.1
+[0m[91m   Compiling[0m[91m darling_macro v0.20.11
+[0m[91m   Compiling rand v0.8.5
+[0m[91m   Compiling[0m[91m pkcs12 v0.1.0
+[0m[91m   Compiling[0m[91m hashlink v0.10.0
+[0m[91m   Compiling[0m[91m dlv-list v0.5.2
+[0m[91m   Compiling[0m[91m unicode-normalization v0.1.25
+[0m[91m   Compiling rustls-native-certs v0.7.3
+[0m[91m   Compiling[0m[91m tokio-util v0.7.18
+[0m[91m   Compiling[0m[91m actix-rt v2.11.0
+[0m[91m   Compiling futures-intrusive v0.5.0
+[0m[91m   Compiling either v1.15.0
+[0m[91m   Compiling thiserror-impl v1.0.69
+[0m[91m   Compiling crossbeam-queue v0.3.12
+[0m[91m   Compiling rc2 v0.8.1
+[0m[91m   Compiling des v0.8.1
+[0m[91m   Compiling actix-server v2.6.0
+[0m[91m   Compiling smartstring v1.0.1
+[0m[91m   Compiling async-io v2.6.0
+[0m[91m   Compiling polling v2.8.0
+[0m[91m   Compiling[0m[91m uuid v1.19.0
+[0m[91m   Compiling[0m[91m unicode-properties v0.1.4
+[0m[91m   Compiling atomic-waker v1.1.2
+[0m[91m   Compiling[0m[91m rustix v0.37.28
+[0m[91m   Compiling[0m[91m h2 v0.3.27
+[0m[91m   Compiling actix-codec v0.5.2
+[0m[91m   Compiling tokio-stream v0.1.18
+[0m[91m   Compiling unicode-bidi v0.3.18
+[0m[91m   Compiling[0m[91m same-file v1.0.6
+[0m[91m   Compiling bumpalo v3.19.1
+[0m[91m   Compiling zlib-rs v0.5.5
+[0m[91m   Compiling cookie-factory v0.3.3
+[0m[91m   Compiling[0m[91m async-task v4.7.1
+[0m[91m   Compiling[0m[91m sqlx-core v0.8.6
+[0m[91m   Compiling[0m[91m walkdir v2.5.0
+[0m[91m   Compiling zopfli v0.8.3
+[0m[91m   Compiling[0m[91m stringprep v0.1.5
+[0m[91m   Compiling[0m[91m amq-protocol-types v7.2.3
+[0m[91m   Compiling piper v0.2.4
+[0m[91m   Compiling[0m[91m p12-keystore v0.1.5
+[0m[91m   Compiling rustls-webpki v0.103.9
+[0m[91m   Compiling hkdf v0.12.4
+[0m[91m   Compiling[0m[91m ordered-multimap v0.7.3
+[0m[91m   Compiling[0m[91m pest_meta v2.8.5
+[0m[91m   Compiling[0m[91m darling v0.20.11
+[0m[91m   Compiling curve25519-dalek v4.1.3
+[0m[91m   Compiling[0m[91m async-channel v2.5.0
+[0m[91m   Compiling[0m[91m futures-executor v0.3.31
+[0m[91m   Compiling[0m[91m polling v3.11.0
+[0m[91m   Compiling atoi v2.0.0
+[0m[91m   Compiling md-5 v0.10.6
+[0m[91m   Compiling async-io v1.13.0
+[0m[91m   Compiling[0m[91m dotenvy v0.15.7
+[0m[91m   Compiling try-lock v0.2.5
+[0m[91m   Compiling event-listener v2.5.3
+[0m[91m   Compiling home v0.5.12
+[0m[91m   Compiling portable-atomic v1.13.0
+[0m[91m   Compiling byteorder v1.5.0
+[0m[91m   Compiling static_assertions v1.1.0
+[0m[91m   Compiling doc-comment v0.3.4
+[0m[91m   Compiling unicase v2.9.0
+[0m[91m   Compiling linux-raw-sys v0.3.8
+[0m[91m   Compiling erased-serde v0.4.9
+[0m[91m   Compiling[0m[91m waker-fn v1.2.0
+[0m[91m   Compiling[0m[91m whoami v1.6.1
+[0m[91m   Compiling[0m[91m bitflags v1.3.2
+[0m[91m   Compiling[0m[91m fastrand v1.9.0
+[0m[91m   Compiling sqlx-postgres v0.8.6
+[0m[91m   Compiling[0m[91m zip v3.0.0
+[0m[91m   Compiling mime_guess v2.0.5
+[0m[91m   Compiling futures-lite v1.13.0
+[0m[91m   Compiling async-lock v2.8.0
+[0m[91m   Compiling pest_generator v2.8.5
+[0m[91m   Compiling want v0.3.1
+[0m[91m   Compiling blocking v1.6.2
+[0m[91m   Compiling futures v0.3.31
+[0m[91m   Compiling[0m[91m rust-ini v0.21.3
+[0m[91m   Compiling amq-protocol-uri v7.2.3
+[0m[91m   Compiling rust-embed-utils v8.11.0
+[0m[91m   Compiling async-executor v1.13.3
+[0m[91m   Compiling async-lock v3.4.2
+[0m[91m   Compiling[0m[91m curve25519-dalek-derive v0.1.1
+[0m[91m   Compiling[0m[91m jemalloc-sys v0.5.4+5.3.0-patched
+[0m[91m   Compiling[0m[91m http-body v0.4.6
+[0m[91m   Compiling[0m[91m raw-cpuid v11.6.0
+[0m[91m   Compiling socket2 v0.4.10
+[0m[91m   Compiling proc-macro-error-attr2 v2.0.0
+[0m[91m   Compiling[0m[91m http v1.4.0
+[0m[91m   Compiling[0m[91m spin v0.9.8
+[0m[91m   Compiling[0m[91m heck v0.5.0
+[0m[91m   Compiling[0m[91m signature v2.2.0
+[0m[91m   Compiling rxml_validation v0.9.1
+[0m[91m   Compiling tower-service v0.3.3
+[0m[91m   Compiling amq-protocol v7.2.3
+[0m[91m   Compiling[0m[91m winnow v0.7.14
+[0m[91m   Compiling[0m[91m hyper v0.14.32
+[0m[91m   Compiling rxml v0.9.1
+[0m[91m   Compiling ed25519 v2.2.3
+[0m[91m   Compiling flume v0.11.1
+[0m[91m   Compiling proc-macro-error2 v2.0.1
+[0m[91m   Compiling attohttpc v0.28.5
+[0m[91m   Compiling async-global-executor v3.1.0
+[0m[91m   Compiling[0m[91m rustls-connector v0.20.2
+[0m[91m   Compiling[0m[91m quanta v0.12.6
+[0m[91m   Compiling pest_derive v2.8.5
+[0m[91m   Compiling tcp-stream v0.28.0
+[0m[91m   Compiling[0m[91m toml_parser v1.0.6+spec-1.1.0
+[0m[91m   Compiling[0m[91m rust-embed-impl v8.11.0
+[0m[91m   Compiling[0m[91m utoipa-swagger-ui v9.0.2
+[0m[91m   Compiling[0m[91m amq-protocol-tcp v7.2.3
+[0m[91m   Compiling[0m[91m tokio-native-tls v0.3.1
+[0m[91m   Compiling utoipa-gen v5.4.0
+[0m[91m   Compiling[0m[91m sqlx-macros-core v0.8.6
+[0m[91m   Compiling dashmap v5.5.3
+[0m[91m   Compiling quick-xml v0.32.0
+[0m[91m   Compiling executor-trait v2.1.2
+[0m[91m   Compiling[0m[91m reactor-trait v1.1.0
+[0m[91m   Compiling[0m[91m toml_datetime v0.7.5+spec-1.1.0
+[0m[91m   Compiling[0m[91m serde_spanned v1.0.4
+[0m[91m   Compiling digest v0.9.0
+[0m[91m   Compiling cipher v0.3.0
+[0m[91m   Compiling[0m[91m crypto-mac v0.8.0
+[0m[91m   Compiling[0m[91m spinning_top v0.3.0
+[0m[91m   Compiling anyhow v1.0.100
+[0m[91m   Compiling arraydeque v0.5.1
+[0m[91m   Compiling[0m[91m opaque-debug v0.3.1
+[0m[91m   Compiling[0m[91m lapin v2.5.5
+[0m[91m   Compiling rustls v0.22.4
+[0m[91m   Compiling futures-timer v3.0.3
+[0m[91m   Compiling convert_case v0.4.0
+[0m[91m   Compiling[0m[91m no-std-compat v0.4.1
+[0m[91m   Compiling parse-size v1.1.0
+[0m[91m   Compiling nonzero_ext v0.3.0
+[0m[91m   Compiling actix-multipart-derive v0.7.0
+[0m[91m   Compiling ron v0.12.0
+[0m[91m   Compiling convert_case v0.6.0
+[0m[91m   Compiling governor v0.6.3
+[0m[91m   Compiling derive_more v0.99.20
+[0m[91m   Compiling yaml-rust2 v0.10.4
+[0m[91m   Compiling[0m[91m blake2 v0.9.2
+[0m[91m   Compiling chacha20 v0.8.2
+[0m[91m   Compiling toml v0.9.11+spec-1.1.0
+[0m[91m   Compiling async-reactor-trait v1.1.0
+[0m[91m   Compiling aws-creds v0.37.0
+[0m[91m   Compiling hyper-tls v0.5.0
+[0m[91m   Compiling async-global-executor-trait v2.2.0
+[0m[91m   Compiling serde-untagged v0.1.9
+[0m[91m   Compiling sqlx-macros v0.8.6
+[0m[91m   Compiling rust-embed v8.11.0
+[0m[91m   Compiling ed25519-dalek v2.2.0
+[0m[91m   Compiling pinky-swear v6.2.1
+[0m[91m   Compiling json5 v0.4.1
+[0m[91m   Compiling minidom v0.15.2
+[0m[91m   Compiling validator_derive v0.20.0
+[0m[91m   Compiling[0m[91m rustls-webpki v0.102.8
+[0m[91m   Compiling[0m[91m aws-region v0.25.5
+[0m[91m   Compiling erased-serde v0.3.31
+[0m[91m   Compiling serde_plain v1.0.2
+[0m[91m   Compiling tempfile v3.24.0
+[0m[91m   Compiling maybe-async v0.2.10
+[0m[91m   Compiling sharded-slab v0.1.7
+[0m[91m   Compiling[0m[91m password-hash v0.5.0
+[0m[91m   Compiling iso8601 v0.4.2
+[0m[91m   Compiling blake2 v0.10.6
+[0m[91m   Compiling tracing-log v0.2.0
+[0m[91m   Compiling thread_local v1.1.9
+[0m[91m   Compiling md5 v0.7.0
+[0m[91m   Compiling pathdiff v0.2.3
+[0m[91m   Compiling nu-ansi-term v0.50.3
+[0m[91m   Compiling base64 v0.13.1
+[0m[91m   Compiling config v0.15.19
+[0m[91m   Compiling[0m[91m rust-s3 v0.35.1
+[0m[91m   Compiling[0m[91m argon2 v0.5.3
+[0m[91m   Compiling validator v0.20.0
+[0m[91m   Compiling rusty_paseto v0.6.1
+[0m[91m   Compiling tracing-subscriber v0.3.22
+[0m[91m   Compiling[0m[91m secrecy v0.8.0
+[0m[91m   Compiling sqlx v0.8.6
+[0m[91m   Compiling utoipa v5.4.0
+[0m[91m   Compiling zstd v0.13.3
+[0m[91m   Compiling actix-http v3.11.2
+[0m[91m   Compiling actix-web v4.12.1
+[0m[91m   Compiling actix-web-httpauth v0.8.2
+   Compiling actix-governor v0.5.0
+   Compiling actix-multipart v0.7.2
+   Compiling actix-cors v0.7.1
+[0m  Preparing metadata (pyproject.toml): still running...
+[91m   Compiling jemallocator v0.5.4
+[0m[91m   Compiling cell-analysis-backend v0.1.0 (/app)
+[0m[91mwarning: unused variable: `s3_storage`
+   --> src/handlers/image_handlers.rs:732:5
+    |
+732 |     s3_storage: web::Data<crate::services::S3StorageService>,
+    |     ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_s3_storage`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+[0m[91mwarning: `cell-analysis-backend` (lib) generated 1 warning (run `cargo fix --lib -p cell-analysis-backend` to apply 1 suggestion)
+[0m[91mwarning: unused import: `RabbitmqError`
+ --> src/services/mod.rs:8:48
+  |
+8 | pub use rabbitmq_service::{AnalysisJobMessage, RabbitmqError, RabbitmqService};
+  |                                                ^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+[0m[91mwarning: field `username` is never read
+  --> src/middleware/auth.rs:35:9
+   |
+33 | pub struct AuthenticatedUser {
+   |            ----------------- field in this struct
+34 |     pub user_id: Uuid,
+35 |     pub username: String,
+   |         ^^^^^^^^
+   |
+   = note: `AuthenticatedUser` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: associated functions `restore`, `hard_delete`, and `find_deleted_by_user_id` are never used
+   --> src/repositories/folder_repository.rs:164:18
+    |
+ 20 | impl FolderRepository {
+    | --------------------- associated functions in this implementation
+...[0m[91m
+164 |     pub async fn restore(
+    |                  ^^^^^^^
+...
+185 |     pub async fn hard_delete(
+    |                  ^^^^^^^^^^^
+...
+224 |     pub async fn find_deleted_by_user_id(
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `start_processing` and `complete` are never used
+  --> src/repositories/job_repository.rs:56:18
+   |
+13 | impl JobRepository {
+   | ------------------ associated functions in this implementation
+...
+56 |     pub async fn start_processing(pool: &PgPool, job_id: i64) -> Result<(), sqlx::Error> {
+   |                  ^^^^^^^^^^^^^^^^
+...
+70 |     pub async fn complete(pool: &PgPool, job_id: i64) -> Result<(), sqlx::Error> {
+   |                  ^^^^^^^^
+
+[0m[91mwarning: associated function `create` is never used
+   --> src/repositories/job_repository.rs:146:18
+    |
+144 | impl AnalysisResultRepository {
+    |[0m[91m ----------------------------- associated function in this implementation
+145 |     /// Create analysis result
+146 [0m[91m|     pub async fn create(
+    |                  ^^^^^^
+
+warning: constant `STORAGE_PATH` is never used
+  [0m[91m--> src/services/image_service.rs:23:11
+   |
+23 | pub const STORAGE_PATH: &str = "./uploads";
+   |           [0m[91m^^^^^^^^^^^^
+
+[0m[91mwarning: associated functions `generate_storage_path` and `save_file` are never used
+   --> src/services/image_service.rs:93:12
+    |
+ 55 | impl ImageService {
+    | ----------------- associated functions in this implementation
+...
+ 93 |     pub fn generate_storage_path(original_filename: &str) -> (String, String) {
+    |            ^^^^^^^^^^^^^^^^^^^^^
+...
+108 [0m[91m|     pub async fn save_file(
+    |                  ^^^^^^^^^
+
+[0m  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting argon2-cffi (from minio>=7.2.0->-r requirements.txt (line 5))
+  Downloading argon2_cffi-25.1.0-py3-none-any.whl.metadata (4.1 kB)
+Requirement already satisfied: certifi in /opt/conda/lib/python3.13/site-packages (from minio>=7.2.0->-r requirements.txt (line 5)) (2025.4.26)
+Collecting pycryptodome (from minio>=7.2.0->-r requirements.txt (line 5))
+  Downloading pycryptodome-3.23.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.4 kB)
+Requirement already satisfied: typing-extensions in /opt/conda/lib/python3.13/site-packages (from minio>=7.2.0->-r requirements.txt (line 5)) (4.12.2)
+Requirement already satisfied: urllib3 in /opt/conda/lib/python3.13/site-packages (from minio>=7.2.0->-r requirements.txt (line 5)) (2.3.0)
+Collecting matplotlib>=3.3.0 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading matplotlib-3.10.8-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (52 kB)
+Collecting opencv-python>=4.6.0 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading opencv_python-4.13.0.90-cp37-abi3-manylinux_2_28_x86_64.whl.metadata (19 kB)
+Collecting pyyaml>=5.3.1 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Requirement already satisfied: requests>=2.23.0 in /opt/conda/lib/python3.13/site-packages (from ultralytics>=8.3.0->-r requirements.txt (line 11)) (2.32.3)
+Collecting scipy>=1.4.1 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading scipy-1.17.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Collecting torch<2.10,>=1.8.0 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading torch-2.9.1-cp313-cp313-manylinux_2_28_x86_64.whl.metadata (30 kB)
+Collecting torchvision>=0.9.0 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading torchvision-0.25.0-cp313-cp313-manylinux_2_28_x86_64.whl.metadata (5.4 kB)
+Collecting psutil>=5.8.0 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading psutil-7.2.1-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+Collecting polars>=0.20.0 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading polars-1.37.1-py3-none-any.whl.metadata (10 kB)
+Collecting ultralytics-thop>=2.0.18 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading ultralytics_thop-2.0.18-py3-none-any.whl.metadata (14 kB)
+Collecting contourpy>=1.0.1 (from matplotlib>=3.3.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading contourpy-1.3.3-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (5.5 kB)
+Collecting cycler>=0.10 (from matplotlib>=3.3.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting fonttools>=4.22.0 (from matplotlib>=3.3.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading fonttools-4.61.1-cp313-cp313-manylinux1_x86_64.manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_5_x86_64.whl.metadata (114 kB)
+Collecting kiwisolver>=1.3.1 (from matplotlib>=3.3.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading kiwisolver-1.4.9-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.3 kB)
+Requirement already satisfied: packaging>=20.0 in /opt/conda/lib/python3.13/site-packages (from matplotlib>=3.3.0->ultralytics>=8.3.0->-r requirements.txt (line 11)) (24.2)
+Collecting pyparsing>=3 (from matplotlib>=3.3.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Collecting python-dateutil>=2.7 (from matplotlib>=3.3.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+INFO: pip is looking at multiple versions of opencv-python to determine which version is compatible with other requirements. This could take a while.
+Collecting opencv-python>=4.6.0 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading opencv_python-4.12.0.88-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (19 kB)
+  Downloading opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (20 kB)
+Collecting polars-runtime-32==1.37.1 (from polars>=0.20.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading polars_runtime_32-1.37.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+Requirement already satisfied: charset-normalizer<4,>=2 in /opt/conda/lib/python3.13/site-packages (from requests>=2.23.0->ultralytics>=8.3.0->-r requirements.txt (line 11)) (3.3.2)
+Requirement already satisfied: idna<4,>=2.5 in /opt/conda/lib/python3.13/site-packages (from requests>=2.23.0->ultralytics>=8.3.0->-r requirements.txt (line 11)) (3.7)
+Collecting filelock (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading filelock-3.20.3-py3-none-any.whl.metadata (2.1 kB)
+Requirement already satisfied: setuptools in /opt/conda/lib/python3.13/site-packages (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11)) (78.1.1)
+Collecting sympy>=1.13.3 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx>=2.5.1 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting jinja2 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting fsspec>=0.8.5 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading fsspec-2026.1.0-py3-none-any.whl.metadata (10 kB)
+Collecting nvidia-cuda-nvrtc-cu12==12.8.93 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cuda_nvrtc_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cuda-runtime-cu12==12.8.90 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cuda_runtime_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cuda-cupti-cu12==12.8.90 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cuda_cupti_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cudnn-cu12==9.10.2.21 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cudnn_cu12-9.10.2.21-py3-none-manylinux_2_27_x86_64.whl.metadata (1.8 kB)
+Collecting nvidia-cublas-cu12==12.8.4.1 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cublas_cu12-12.8.4.1-py3-none-manylinux_2_27_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cufft-cu12==11.3.3.83 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cufft_cu12-11.3.3.83-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-curand-cu12==10.3.9.90 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_curand_cu12-10.3.9.90-py3-none-manylinux_2_27_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cusolver-cu12==11.7.3.90 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cusolver_cu12-11.7.3.90-py3-none-manylinux_2_27_x86_64.whl.metadata (1.8 kB)
+Collecting nvidia-cusparse-cu12==12.5.8.93 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cusparse_cu12-12.5.8.93-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.8 kB)
+Collecting nvidia-cusparselt-cu12==0.7.1 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cusparselt_cu12-0.7.1-py3-none-manylinux2014_x86_64.whl.metadata (7.0 kB)
+Collecting nvidia-nccl-cu12==2.27.5 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_nccl_cu12-2.27.5-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.0 kB)
+Collecting nvidia-nvshmem-cu12==3.3.20 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_nvshmem_cu12-3.3.20-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.1 kB)
+Collecting nvidia-nvtx-cu12==12.8.90 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_nvtx_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.8 kB)
+Collecting nvidia-nvjitlink-cu12==12.8.93 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_nvjitlink_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.7 kB)
+Collecting nvidia-cufile-cu12==1.13.1.3 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading nvidia_cufile_cu12-1.13.1.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)
+Collecting triton==3.5.1 (from torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading triton-3.5.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (1.7 kB)
+INFO: pip is looking at multiple versions of torchvision to determine which version is compatible with other requirements. This could take a while.
+Collecting torchvision>=0.9.0 (from ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading torchvision-0.24.1-cp313-cp313-manylinux_2_28_x86_64.whl.metadata (5.9 kB)
+Collecting argon2-cffi-bindings (from argon2-cffi->minio>=7.2.0->-r requirements.txt (line 5))
+  Downloading argon2_cffi_bindings-25.1.0-cp39-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (7.4 kB)
+Collecting six>=1.5 (from python-dateutil>=2.7->matplotlib>=3.3.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Requirement already satisfied: cffi>=1.0.1 in /opt/conda/lib/python3.13/site-packages (from argon2-cffi-bindings->argon2-cffi->minio>=7.2.0->-r requirements.txt (line 5)) (1.17.1)
+Collecting MarkupSafe>=2.0 (from jinja2->torch<2.10,>=1.8.0->ultralytics>=8.3.0->-r requirements.txt (line 11))
+  Downloading markupsafe-3.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Requirement already satisfied: pycparser in /opt/conda/lib/python3.13/site-packages (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi->minio>=7.2.0->-r requirements.txt (line 5)) (2.21)
+Downloading pika-1.3.2-py3-none-any.whl (155 kB)
+Downloading minio-7.2.20-py3-none-any.whl (93 kB)
+Downloading psycopg2_binary-2.9.11-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.2/4.2 MB 8.0 MB/s eta 0:00:00
+Downloading ultralytics-8.4.7-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 8.4 MB/s eta 0:00:00
+Downloading python_dotenv-1.2.1-py3-none-any.whl (21 kB)
+Downloading pillow-12.1.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.0/7.0 MB 8.2 MB/s eta 0:00:00
+Downloading matplotlib-3.10.8-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (8.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.7/8.7 MB 8.9 MB/s eta 0:00:00
+Downloading opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (63.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 63.0/63.0 MB 9.3 MB/s eta 0:00:00
+Downloading polars-1.37.1-py3-none-any.whl (805 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 805.7/805.7 kB 10.2 MB/s eta 0:00:00
+Downloading polars_runtime_32-1.37.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (45.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.1/45.1 MB 10.6 MB/s eta 0:00:00
+Downloading psutil-7.2.1-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (154 kB)
+Downloading pyyaml-6.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.6/801.6 kB 17.5 MB/s eta 0:00:00
+Downloading scipy-1.17.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.0/35.0 MB 13.6 MB/s eta 0:00:00
+Downloading torch-2.9.1-cp313-cp313-manylinux_2_28_x86_64.whl (899.7 MB)
+[91mwarning: `cell-analysis-backend` (bin "cell-analysis-backend") generated 8 warnings (1 duplicate) (run `cargo fix --bin "cell-analysis-backend" -p cell-analysis-backend` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 3m 03s
+[0m ---> Removed intermediate container c3bb0655563f
+ ---> 2cdfb7fe60b2
+Step 8/16 : FROM debian:bookworm-slim
+ ---> d60e93accd5d
+Step 9/16 : RUN apt-get update && apt-get install -y     ca-certificates     libssl3     && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> fed258c00a47
+Step 10/16 : WORKDIR /app
+ ---> Using cache
+ ---> 3e98e34ad6a8
+Step 11/16 : COPY --from=builder /app/target/release/cell-analysis-backend .
+ ---> e77c67cf3f5b
+Step 12/16 : COPY --from=builder /app/migrations ./migrations
+ ---> c084e442cf75
+Step 13/16 : EXPOSE 8080
+ ---> Running in ce80d0308fbf
+ ---> Removed intermediate container ce80d0308fbf
+ ---> 4b720d68d645
+Step 14/16 : HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3     CMD curl -f http://localhost:8080/api/v1/health || exit 1
+ ---> Running in b969ba721cd2
+ ---> Removed intermediate container b969ba721cd2
+ ---> 51e0218a6b8c
+Step 15/16 : CMD ["./cell-analysis-backend"]
+ ---> Running in 10453a6ed279
+ ---> Removed intermediate container 10453a6ed279
+ ---> d02794c47ae4
+Step 16/16 : LABEL com.docker.compose.image.builder=classic
+ ---> Running in 8d96df1ca901
+ ---> Removed intermediate container 8d96df1ca901
+ ---> 2b2953aec923
+Successfully built 2b2953aec923
+Successfully tagged capstone_project-backend:latest
+ Image capstone_project-backend Built 
+ Image capstone_project-backend Built 
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 899.7/899.7 MB 12.4 MB/s eta 0:00:00
+Downloading nvidia_cublas_cu12-12.8.4.1-py3-none-manylinux_2_27_x86_64.whl (594.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 594.3/594.3 MB 12.7 MB/s eta 0:00:00
+Downloading nvidia_cuda_cupti_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (10.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.2/10.2 MB 11.6 MB/s eta 0:00:00
+Downloading nvidia_cuda_nvrtc_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (88.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 88.0/88.0 MB 13.0 MB/s eta 0:00:00
+Downloading nvidia_cuda_runtime_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (954 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 954.8/954.8 kB 17.1 MB/s eta 0:00:00
+Downloading nvidia_cudnn_cu12-9.10.2.21-py3-none-manylinux_2_27_x86_64.whl (706.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 706.8/706.8 MB 12.2 MB/s eta 0:00:00
+Downloading nvidia_cufft_cu12-11.3.3.83-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (193.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 193.1/193.1 MB 13.5 MB/s eta 0:00:00
+Downloading nvidia_cufile_cu12-1.13.1.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 12.0 MB/s eta 0:00:00
+Downloading nvidia_curand_cu12-10.3.9.90-py3-none-manylinux_2_27_x86_64.whl (63.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 63.6/63.6 MB 12.4 MB/s eta 0:00:00
+Downloading nvidia_cusolver_cu12-11.7.3.90-py3-none-manylinux_2_27_x86_64.whl (267.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 267.5/267.5 MB 11.0 MB/s eta 0:00:00
+Downloading nvidia_cusparse_cu12-12.5.8.93-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (288.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 288.2/288.2 MB 13.0 MB/s eta 0:00:00
+Downloading nvidia_cusparselt_cu12-0.7.1-py3-none-manylinux2014_x86_64.whl (287.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 287.2/287.2 MB 12.6 MB/s eta 0:00:00
+Downloading nvidia_nccl_cu12-2.27.5-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (322.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 322.3/322.3 MB 12.0 MB/s eta 0:00:00
+Downloading nvidia_nvjitlink_cu12-12.8.93-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (39.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 39.3/39.3 MB 12.8 MB/s eta 0:00:00
+Downloading nvidia_nvshmem_cu12-3.3.20-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (124.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.7/124.7 MB 12.7 MB/s eta 0:00:00
+Downloading nvidia_nvtx_cu12-12.8.90-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (89 kB)
+Downloading triton-3.5.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (170.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 170.5/170.5 MB 12.6 MB/s eta 0:00:00
+Downloading torchvision-0.24.1-cp313-cp313-manylinux_2_28_x86_64.whl (8.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 13.4 MB/s eta 0:00:00
+Downloading ultralytics_thop-2.0.18-py3-none-any.whl (28 kB)
+Downloading argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+Downloading pycryptodome-3.23.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 14.1 MB/s eta 0:00:00
+Downloading contourpy-1.3.3-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (362 kB)
+Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
+Downloading fonttools-4.61.1-cp313-cp313-manylinux1_x86_64.manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_5_x86_64.whl (4.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.9/4.9 MB 14.0 MB/s eta 0:00:00
+Downloading fsspec-2026.1.0-py3-none-any.whl (201 kB)
+Downloading kiwisolver-1.4.9-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.5/1.5 MB 13.9 MB/s eta 0:00:00
+Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 14.1 MB/s eta 0:00:00
+Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 13.4 MB/s eta 0:00:00
+Downloading argon2_cffi_bindings-25.1.0-cp39-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (87 kB)
+Downloading filelock-3.20.3-py3-none-any.whl (16 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading markupsafe-3.0.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 13.8 MB/s eta 0:00:00
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Building wheels for collected packages: numpy
+  Building wheel for numpy (pyproject.toml): started
+  Building wheel for numpy (pyproject.toml): finished with status 'done'
+  Created wheel for numpy: filename=numpy-1.26.4-cp313-cp313-linux_x86_64.whl size=8884081 sha256=22f7813e9b56234177b9f265ad561d3c2a777bc82e436b4ca2e91fe5b0904c6d
+  Stored in directory: /tmp/pip-ephem-wheel-cache-h7uz4v9w/wheels/8b/2d/9f/b6b46373f328e2ef50388915d351ccacbedac929459b5459bf
+Successfully built numpy
+Installing collected packages: nvidia-cusparselt-cu12, mpmath, triton, sympy, six, pyyaml, python-dotenv, pyparsing, pycryptodome, psycopg2-binary, psutil, polars-runtime-32, pillow, pika, nvidia-nvtx-cu12, nvidia-nvshmem-cu12, nvidia-nvjitlink-cu12, nvidia-nccl-cu12, nvidia-curand-cu12, nvidia-cufile-cu12, nvidia-cuda-runtime-cu12, nvidia-cuda-nvrtc-cu12, nvidia-cuda-cupti-cu12, nvidia-cublas-cu12, numpy, networkx, MarkupSafe, kiwisolver, fsspec, fonttools, filelock, cycler, scipy, python-dateutil, polars, opencv-python, nvidia-cusparse-cu12, nvidia-cufft-cu12, nvidia-cudnn-cu12, jinja2, contourpy, argon2-cffi-bindings, nvidia-cusolver-cu12, matplotlib, argon2-cffi, torch, minio, ultralytics-thop, torchvision, ultralytics
+Successfully installed MarkupSafe-3.0.3 argon2-cffi-25.1.0 argon2-cffi-bindings-25.1.0 contourpy-1.3.3 cycler-0.12.1 filelock-3.20.3 fonttools-4.61.1 fsspec-2026.1.0 jinja2-3.1.6 kiwisolver-1.4.9 matplotlib-3.10.8 minio-7.2.20 mpmath-1.3.0 networkx-3.6.1 numpy-1.26.4 nvidia-cublas-cu12-12.8.4.1 nvidia-cuda-cupti-cu12-12.8.90 nvidia-cuda-nvrtc-cu12-12.8.93 nvidia-cuda-runtime-cu12-12.8.90 nvidia-cudnn-cu12-9.10.2.21 nvidia-cufft-cu12-11.3.3.83 nvidia-cufile-cu12-1.13.1.3 nvidia-curand-cu12-10.3.9.90 nvidia-cusolver-cu12-11.7.3.90 nvidia-cusparse-cu12-12.5.8.93 nvidia-cusparselt-cu12-0.7.1 nvidia-nccl-cu12-2.27.5 nvidia-nvjitlink-cu12-12.8.93 nvidia-nvshmem-cu12-3.3.20 nvidia-nvtx-cu12-12.8.90 opencv-python-4.11.0.86 pika-1.3.2 pillow-12.1.0 polars-1.37.1 polars-runtime-32-1.37.1 psutil-7.2.1 psycopg2-binary-2.9.11 pycryptodome-3.23.0 pyparsing-3.3.2 python-dateutil-2.9.0.post0 python-dotenv-1.2.1 pyyaml-6.0.3 scipy-1.17.0 six-1.17.0 sympy-1.14.0 torch-2.9.1 torchvision-0.24.1 triton-3.5.1 ultralytics-8.4.7 ultralytics-thop-2.0.18
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[0m ---> Removed intermediate container 811c8557a28f
+ ---> ce226b319fa1
+Step 6/10 : COPY . .
+ ---> c8a5c5d009c8
+Step 7/10 : RUN mkdir -p /app/models
+ ---> Running in 5b00fec0425c
+ ---> Removed intermediate container 5b00fec0425c
+ ---> 58d3a6534191
+Step 8/10 : HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3                     CMD python -c "import worker; import inference; import config" || exit 1
+ ---> Running in 31be7a507761
+ ---> Removed intermediate container 31be7a507761
+ ---> f31395718876
+Step 9/10 : CMD ["python", "worker.py"]
+ ---> Running in a8471912fb7d
+ ---> Removed intermediate container a8471912fb7d
+ ---> 412d74f7ba45
+Step 10/10 : LABEL com.docker.compose.image.builder=classic
+ ---> Running in 12063b7ce45f
+ ---> Removed intermediate container 12063b7ce45f
+ ---> 850cdf190efc
+Successfully built 850cdf190efc
+Successfully tagged capstone_project-model_worker:latest
+ Image capstone_project-model_worker Built 
+ Image capstone_project-model_worker Built 
+ Volume Cell_Analysis_Backend-rabbitmq-data Creating 
+ Volume Cell_Analysis_Backend-rabbitmq-data Created 
+ Container Cell_Analysis_Backend-rabbitmq Creating 
+ Container Cell_Analysis_Backend-rabbitmq Created 
+ Container Cell_Analysis_Backend-model-worker Creating 
+ Container Cell_Analysis_Backend-backend Recreate 
+ Container Cell_Analysis_Backend-model-worker Created 
+ Container Cell_Analysis_Backend-backend Recreated 
+ Container Cell_Analysis_Backend-minio Starting 
+ Container Cell_Analysis_Backend-rabbitmq Starting 
+ Container Cell_Analysis_Backend-postgres Starting 
+ Container Cell_Analysis_Backend-rabbitmq Started 
+ Container Cell_Analysis_Backend-postgres Started 
+ Container Cell_Analysis_Backend-minio Started 
+ Container Cell_Analysis_Backend-minio Waiting 
+ Container Cell_Analysis_Backend-postgres Waiting 
+ Container Cell_Analysis_Backend-rabbitmq Waiting 
+ Container Cell_Analysis_Backend-minio Waiting 
+ Container Cell_Analysis_Backend-postgres Waiting 
+ Container Cell_Analysis_Backend-minio Waiting 
+ Container Cell_Analysis_Backend-rabbitmq Waiting 
+ Container Cell_Analysis_Backend-postgres Healthy 
+ Container Cell_Analysis_Backend-postgres Healthy 
+ Container Cell_Analysis_Backend-minio Healthy 
+ Container Cell_Analysis_Backend-rabbitmq Healthy 
+ Container Cell_Analysis_Backend-model-worker Starting 
+ Container Cell_Analysis_Backend-minio Healthy 
+ Container Cell_Analysis_Backend-minio Healthy 
+ Container Cell_Analysis_Backend-minio-setup Starting 
+ Container Cell_Analysis_Backend-rabbitmq Healthy 
+ Container Cell_Analysis_Backend-backend Starting 
+ Container Cell_Analysis_Backend-backend Started 
+ Container Cell_Analysis_Backend-minio-setup Started 
+ Container Cell_Analysis_Backend-model-worker Started 

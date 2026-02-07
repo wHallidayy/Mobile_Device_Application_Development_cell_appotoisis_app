@@ -1,0 +1,469 @@
+\chapter{เอกสารที่เกี่ยวข้อง}
+
+ในการพัฒนาโครงงานนี้ ผู้พัฒนาได้ทำการศึกษาข้อมูลจากแหล่งต่าง ๆ เพื่อให้เข้าใจทั้งในด้านทฤษฎีและแนวทางจากงานวิจัยที่เกี่ยวข้อง 
+อันจะช่วยกำหนดวิธีการทดลอง การเตรียมข้อมูลภาพ และการพัฒนาแบบจำลองปัญญาประดิษฐ์ได้อย่างถูกต้องและมีประสิทธิภาพ 
+โดยในบทนี้จะนำเสนอเอกสารที่เกี่ยวข้องซึ่งแบ่งออกเป็นสองส่วนหลัก ได้แก่
+
+\begin{enumerate}[label=\arabic*.]
+    \item ทฤษฎีที่เกี่ยวข้อง ครอบคลุมความรู้พื้นฐานที่จำเป็นสำหรับการดำเนินโครงงาน เช่น ความรู้ทาง
+    ชีววิทยาที่เกี่ยวกับลักษณะและพฤติกรรมของเซลล์มะเร็ง หลักการประมวลผลภาพดิจิทัล เทคนิค
+    การดึงคุณลักษณะ และแนวคิดของการเรียนรู้เชิงลึก โดยเฉพาะโครงข่ายประสาทเทียมแบบ
+    Convolutional Neural Network (CNN) ซึ่งเป็นเทคนิคหลักที่นำมาใช้ในการจำแนกเซลล์
+    \item งานวิจัยที่ใกล้เคียง เป็นการรวบรวมและวิเคราะห์ผลงานวิจัยที่มีลักษณะคล้ายคลึงกับโครงงานนี้
+    เพื่อใช้เป็นแนวทางในการออกแบบระบบ พร้อมทั้งศึกษาแนวคิด ข้อดี ข้อจำกัด และการ
+    ประยุกต์ใช้งาน เพื่อให้การพัฒนาระบบมีความถูกต้องและมีประสิทธิภาพสูงสุด
+\end{enumerate}
+
+\section{ทฤษฎีที่เกี่ยวข้อง}
+ในการพัฒนาโครงงานระบบวิเคราะห์เซลล์มะเร็ง ผู้พัฒนาได้ทำการศึกษาแนวคิดและองค์ความรู้ที่เกี่ยวข้องทั้งในด้านวิทยาศาสตร์ข้อมูลและด้านชีววิทยา โดยแบ่งออกเป็น 2 ส่วนหลักตามขอบเขตของการ
+ดำเนินงาน ได้แก่ ส่วนของการสร้างและฝึกสอนแบบจำลองปัญญาประดิษฐ์ และส่วนของการประมวลผลภาพจุลทรรศน์เพื่อเตรียมข้อมูลสำหรับการวิเคราะห์
+
+เนื้อหาทางทฤษฎีที่เกี่ยวข้องในส่วนนี้ครอบคลุมตั้งแต่ความรู้พื้นฐานทางชีววิทยาเกี่ยวกับลักษณะของเซลล์มะเร็งและกระบวนการเปลี่ยนแปลงของเซลล์ 
+เทคนิคการประมวลผลภาพดิจิทัลสำหรับการแยกและวิเคราะห์ลักษณะของเซลล์ ตลอดจนแนวคิดของการเรียนรู้เชิงลึก โดยเฉพาะโครงข่ายประสาทเทียมแบบ 
+Convolutional Neural Network (CNN) ซึ่งเป็นเทคนิคหลักที่ใช้ในการจำแนกสถานะของเซลล์ รวมถึง
+เทคนิคการเพิ่มประสิทธิภาพของแบบจำลอง
+
+% หัวข้อชื่อ "เซลล์มะเร็งและการแบ่งเซลล์..." แต่เนื้อหา 90% เป็นเรื่อง Mitosis ทั่วไป ขาดการเชื่อมโยงว่า "แล้วมันเกี่ยวกับมะเร็งตรงไหนในแต่ละระยะ?"
+% \subsection{ความสัมพันธ์ระหว่างเซลล์มะเร็งและวัฏจักรการแบ่งเซลล์แบบ Mitosis}
+% \subsection{เซลล์มะเร็งและการแบ่งเซลล์แบบ Mitosis}
+
+% เซลล์มะเร็งมีลักษณะสำคัญคือความผิดปกติในการควบคุมวัฏจักรเซลล์ (Cell cycle) 
+% ทำให้เกิดการแบ่งตัวอย่างรวดเร็วและไม่หยุดยั้ง โดยเฉพาะในช่วง M phase (Mitosis) ซึ่งเป็นช่วงที่เซลล์ใช้เวลาน้อยที่สุด 
+% (น้อยกว่า 1 ชั่วโมงในเซลล์สัตว์เลี้ยงลูกด้วยนม) แต่มีการเปลี่ยนแปลงโครงสร้างที่ซับซ้อนที่สุด \parencite{alberts2022} 
+% กระบวนการนี้ประกอบด้วยการแบ่งนิวเคลียส (Mitosis) และการแบ่งไซโทพลาซึม (Cytokinesis) เพื่อให้ได้เซลล์ลูกที่มีพันธุกรรมเหมือนเซลล์แม่ทุกประการ 
+% โดยแบ่งออกเป็นระยะย่อยได้ดังนี้
+\subsection{ลักษณะของเซลล์มะเร็งและความสัมพันธ์กับวัฏจักรเซลล์}
+
+เซลล์มะเร็งมีลักษณะสำคัญคือความผิดปกติในการควบคุมวัฏจักรเซลล์ (Cell cycle) 
+ส่งผลให้เกิดการแบ่งตัวอย่างรวดเร็วและไม่สามารถควบคุมได้ \parencite{alberts2022} 
+ซึ่งแตกต่างจากเซลล์ปกติที่มีกลไกควบคุมการเจริญเติบโตและการตายของเซลล์อย่างเหมาะสม
+
+ในโครงงานนี้ คณะผู้จัดทำมุ่งเน้นการจำแนกเซลล์มะเร็งออกเป็นสองสถานะหลัก คือ 
+เซลล์ที่ยังมีชีวิต (Viable cells) และเซลล์ที่เข้าสู่กระบวนการตายแบบอะพอปโทซิส 
+(Apoptosis cells) โดยจัดให้ระยะการแบ่งตัวของเซลล์ (Mitosis) อยู่ในกลุ่มของเซลล์ที่ยังมีชีวิต 
+เนื่องจากเซลล์มะเร็งในระยะนี้ยังคงมีความสามารถในการแบ่งตัวและเจริญเติบโตต่อไปได้ 
+โดยแบ่งออกเป็นระยะย่อยได้ดังนี้
+
+\begin{description}
+    \item[1. Prophase] เป็นระยะเริ่มต้นที่โครมาติน (Chromatin) ในนิวเคลียสจะขดตัวแน่นจนปรากฏเป็นแท่งโครโมโซม (Chromosome) ที่ประกอบด้วย 2 ซิสเตอร์โครมาทิด (Sister chromatids) ยึดติดกัน ขณะเดียวกัน เซนโทรโซม (Centrosomes) จะเคลื่อนที่แยกไปยังขั้วตรงข้ามของเซลล์เพื่อเตรียมสร้างเส้นใยสปินเดิล
+    
+    \item[2. Prometaphase] เป็นระยะกึ่งกลางที่เชื่อมต่อระหว่าง Prophase และ Metaphase มีเหตุการณ์สำคัญคือ \textbf{การสลายตัวของเยื่อหุ้มนิวเคลียส (Nuclear envelope disassembly)} ทำให้เส้นใยสปินเดิลสามารถรุกเข้าไปจับกับโครโมโซมได้ที่ตำแหน่งไคนีโทคอร์ (Kinetochore) บริเวณเซนโทรเมียร์ เพื่อเตรียมดึงโครโมโซมให้เคลื่อนที่ไปยังกึ่งกลางเซลล์
+    
+    \item[3. Metaphase] เส้นใยสปินเดิลจะจัดเรียงโครโมโซมทุกคู่ให้มาเรียงตัวในแนวเดียวกันบริเวณกึ่งกลางของเซลล์ (Spindle equator) หรือที่เรียกว่า \textit{Metaphase plate} ระยะนี้เซลล์จะมีระบบตรวจสอบ (Spindle checkpoint) เพื่อให้มั่นใจว่าโครโมโซมถูกจับยึดอย่างสมบูรณ์ก่อนที่จะแยกตัว
+    
+    \item[4. Anaphase] โปรตีน Cohesion ที่ยึดซิสเตอร์โครมาทิดไว้ด้วยกันจะถูกทำลาย ทำให้โครมาทิดพี่น้องแยกออกจากกันกลายเป็นโครโมโซมลูก (Daughter chromosomes) และถูกดึงแยกไปยังขั้วตรงข้ามของเซลล์อย่างรวดเร็ว
+    
+    \item[5. Telophase] เมื่อโครโมโซมเคลื่อนไปถึงขั้วเซลล์ จะเกิดการสร้างเยื่อหุ้มนิวเคลียสขึ้นมาห่อหุ้มกลุ่มโครโมโซมทั้งสองกลุ่ม โครโมโซมจะคลายตัวกลับเป็นเส้นใยโครมาติน และเส้นใยสปินเดิลจะสลายตัวไป
+    
+    \item[6. Cytokinesis] เป็นกระบวนการแบ่งไซโทพลาซึมที่มักเกิดต่อเนื่องจาก Telophase เพื่อตัดแบ่งเซลล์แม่ (Parent cell) ออกเป็นเซลล์ลูก (Daughter cells) 2 เซลล์ที่สมบูรณ์ โดยในเซลล์สัตว์จะเกิดจากการบีบตัวของวงแหวนแอกติน (Contractile ring) จนเซลล์ขาดออกจากกัน \parencite{khan_mitosis}
+\end{description}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/Mitosis_Stages.pdf}
+    \caption{วัฏจักรการแบ่งเซลล์แบบ Mitosis แสดงการเปลี่ยนแปลงของโครโมโซมและโครงสร้างเซลล์ในระยะต่าง ๆ}
+    \label{fig:mitosis_stages}
+    
+    \vspace{0.2cm}
+    \footnotesize{ที่มา: Ali Zifan, \href{https://commons.wikimedia.org/wiki/File:Mitosis_Stages.svg}{Wikimedia Commons}, สัญญาอนุญาต \href{https://creativecommons.org/licenses/by-sa/4.0/}{CC BY-SA 4.0}}
+\end{figure}
+
+\subsection{การตายของเซลล์ชนิดอะพอปโทซิส}
+
+% ปรับเกริ่นนำให้ดู Strong ขึ้น และเพิ่ม Keyword เรื่องการอักเสบ (Inflammation)
+Apoptosis หรือการตายของเซลล์แบบที่มีการโปรแกรมไว้ (Programmed cell death) เป็นกลไกทางสรีรวิทยาที่สำคัญในการรักษาสมดุลของเนื้อเยื่อ (Tissue homeostasis) และกำจัดเซลล์ที่ไม่ต้องการระหว่างการพัฒนาของสิ่งมีชีวิต 
+
+% ส่วนบรรยายลักษณะ เชื่อมโยงกับรูปภาพทันที (In-text reference)
+ในทางสัณฐานวิทยา เซลล์ที่เข้าสู่ภาวะนี้จะเกิดการเปลี่ยนแปลงอย่างเป็นลำดับขั้นตอน ดังแสดงใน \textbf{รูปที่ \ref{fig:apoptosis_stages}} กล่าวคือ เซลล์จะเกิดการหดตัว (Cell shrinkage) โครมาตินในนิวเคลียสจะควบแน่น (Chromatin condensation) และเกิดการแยกสลายของโครงร่างเซลล์ ส่งผลให้เยื่อหุ้มเซลล์โป่งออกมีลักษณะเป็นตุ่ม (Membrane blebbing) ก่อนจะหลุดออกเป็นถุงหุ้มชิ้นส่วนเซลล์ขนาดเล็กเรียกว่า \textit{Apoptotic bodies} \parencite{alberts2022} ชิ้นส่วนเหล่านี้จะถูกกำจัดโดยเซลล์ข้างเคียงหรือแมคโครฟาจผ่านกระบวนการ Phagocytosis โดยไม่กระตุ้นให้เกิดการอักเสบ ซึ่งแตกต่างจากการตายแบบ Necrosis
+
+% ส่วน Clinical significance
+นอกจากบทบาทในการกำจัดเซลล์ที่เสียหายทางพันธุกรรม (DNA damage) แล้ว กลไกนี้ยังทำหน้าที่เป็นปราการสำคัญในการยับยั้งการเกิดเนื้องอกและมะเร็ง (Tumor suppression) โดยป้องกันมิให้เซลล์ที่มีความผิดปกติสามารถแบ่งตัวต่อไปได้ \parencite{nhgri_apoptosis}
+
+ % images/Apoptotic_cell_disassembly-es.png
+
+% Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+% ระบุชื่อเจ้าของผลงาน (Attribution) ให้ถูกต้อง
+
+\begin{figure}[h!]
+    \centering
+
+    \includegraphics[width=1\textwidth]{images/Apoptotic_cell_disassembly.png}
+    \caption{ลำดับขั้นตอนการเปลี่ยนแปลงรูปร่างของเซลล์ในกระบวนการอะพอปโทซิส}
+
+    \label{fig:apoptosis_stages}
+    \vspace{0.2cm}
+
+    % ใช้ Aaron Smith et al. เพราะมีผู้แต่งเกิน 3 คน
+    \footnotesize{ที่มา: Aaron Smith \textit{et al.}, \href{https://commons.wikimedia.org/wiki/File:Apoptotic_cell_disassembly.png}{Wikimedia Commons}, เผยแพร่ภายใต้สัญญาอนุญาต \href{https://creativecommons.org/licenses/by/4.0}{CC BY 4.0}}
+
+\end{figure} 
+
+\subsection{การจำแนกเซลล์}
+การจำแนกว่าเซลล์เป็นเซลล์ที่ยังมีชีวิตหรือเข้าสู่กระบวนการตายแล้ว เป็นขั้นตอนสำคัญในการศึกษาชีววิทยาของเซลล์ โดยเฉพาะในการวิเคราะห์กระบวนการตายแบบอะพอพโทซิส 
+(Apoptosis) หนึ่งในวิธีที่ใช้กันอย่างแพร่หลายคือการย้อมนิวเคลียสด้วยสารเรืองแสง Hoechst 33342 ซึ่งเป็นสีย้อมที่สามารถซึมผ่านเยื่อหุ้มเซลล์ได้ ทำให้สามารถย้อมเซลล์ที่ยังมีชีวิตอยู่ได้โดยไม่ทำลายเซลล์ 
+\parencite{chazotte2010labeling} สารนี้จะจับกับดีเอ็นเอภายในนิวเคลียสและเรืองแสงสีน้ำเงินเมื่อถูกกระตุ้นด้วยแสงอัลตราไวโอเลต ทำให้สามารถสังเกตลักษณะของนิวเคลียสและโครมาตินภายใต้กล้องจุลทรรศน์เรืองแสงได้อย่างชัดเจน
+
+โดยทั่วไปเซลล์ที่ต้องการตรวจสอบจะถูกเพาะเลี้ยงในแผ่นเพาะเลี้ยง จากนั้นให้สารทดลองตามช่วงเวลาที่กำหนดและทำการย้อมด้วย Hoechst 33342 
+ที่ความเข้มข้นประมาณ \SI{10}{\micro\gram\per\milli\liter} เป็นเวลา 30 นาที ในที่มืดที่อุณหภูมิห้อง หลังจากนั้นจะทำการสังเกตด้วยกล้องจุลทรรศน์เรืองแสง (Fluorescence Microscope) โดยใช้ช่วงความยาวคลื่นกระตุ้นและปล่อยแสงที่ \SI{350}{\nano\meter}/\SI{461}{\nano\meter} ตามลำดับ
+
+การเปลี่ยนแปลงของนิวเคลียสที่บ่งบอกถึงกระบวนการ apoptosis เช่น การควบแน่นของโครมาติน (chromatin condensation) 
+และการแตกของดีเอ็นเอ (DNA fragmentation) จะถูกใช้เป็นเกณฑ์ในการจำแนกเซลล์ที่เข้าสู่การตายแบบโปรแกรม (apoptotic cells) 
+จากนั้นจำนวนเซลล์ที่เกิด apoptosis จะถูกนับและคำนวณเป็นร้อยละของจำนวนเซลล์ทั้งหมด \parencite{pouyfung2025antitumor}
+
+\subsection{Machine Learning}
+Murphy \cite{Murphy2022} นิยาม machine learning ตามแนวคิดของ Mitchellว่าเป็นโปรแกรมคอมพิวเตอร์
+ที่สามารถเรียนรู้จากประสบการณ์ (experience, E) เพื่อปรับปรุงประสิทธิภาพในการทำงาน (task, T) โดย
+วัดผลจากตัวชี้วัด (performance measure, P) ที่กำหนดไว้ ซึ่ง machine learning แต่ละประเภทจะมี
+ความ แตกต่างกันตามลักษณะของงาน ตัวชี้วัดประสิทธิภาพ และข้อมูลที่ใช้ในการเรียนรู้
+
+ในโครงงานนี้ ใช้แนวทางของ supervised learning ซึ่งเป็น machine learning ประเภทหนึ่งที่
+เรียนรู้จากข้อมูลที่มีป้ายกำกับ (labeled data) โดยเฉพาะปัญหาการจำแนกประเภทแบบหลายคลาส (multi-
+class classification) งานที่ต้องทำคือการจำแนกเซลล์มะเร็งออกเป็นหลายประเภทตามสถานะของเซลล์
+(task, T) โดยวัดประสิทธิภาพจากความแม่นยำในการจำแนก (performance measure, P) และเรียนรู้จาก
+ภาพเซลล์ที่มีป้ายกำกับระบุประเภทไว้แล้ว (experience, E)
+
+\subsection{Classification}
+Classification คือปัญหาที่ข้อมูลผลลัพธ์ y เป็นข้อมูลแบบหมวดหมู่ (categorical) หรือแบบไม่
+ต่อเนื่อง (discrete) โดยเป้าหมายคือการเรียนรู้ฟังก์ชัน f ที่สามารถจำแนกข้อมูลนำเข้า x ไปยังหมวดหมู่ที่
+เหมาะสม เช่น การจำแนกประเภทดอกไม้ หรือการตรวจจับว่าอีเมลเป็น spam หรือไม่ \parencite{Murphy2022}
+
+\subsection{Binary Classification และ Multi-class Classification}
+ในปัญหาการจำแนกประเภท สามารถแบ่งออกเป็นสองประเภทหลักตามจำนวนคลาสของข้อมูล
+ได้แก่
+    \paragraph{Binary Classification}
+    คือการแบ่งข้อมูลออกเป็น 2 กลุ่ม โดยโมเดล จะเรียนรู้จากข้อมูลที่มีป้ายกำ
+    กับแล้วทำนายว่าข้อมูลใหม่อยู่ในกลุ่มไหน ตัวอย่างการใช้งานที่พบบ่อยได้แก่ การตรวจจับ spam email การ
+    วินิจฉัย ทางการแพทย์ และการวิเคราะห์ความรู้สึกจากข้อความ (Binary Classification with TensorFlow
+    Tutorial, 2023)
+    
+    \paragraph{Multi-class Classification} 
+    เป็นงานการเรียนรู้ของเครื่องที่มีเป้าหมายในการ จำแนกข้อมูลเข้าสู่หนึ่ง
+    ในหลายคลาส (มากกว่า 2 คลาส) โดยแตกต่างจาก binary classification ที่แบ่งข้อมูลเพียง 2 กลุ่ม
+    multiclass classification ขยายขอบเขตไปยังการแยกข้อมูลออกเป็นหลายกลุ่มพร้อมกัน \parencite{Prince2023, GeeksForGeeks2025}
+
+    % ในโครงงานนี้ เราประยุกต์ใช้ multiclass classification เพื่อจำแนกเซลล์มะเร็ง ออกเป็น 3 ประเภท
+    % ได้แก่ เซลล์ปกติ (normal) เซลล์แบ่งตัว (mitosis) และเซลล์ที่ตาย (apoptosis) ซึ่งแต่ละเซลล์จะถูกจัดอยู่ใน
+    % คลาสใดคลาสหนึ่ง เท่านั้น
+
+    ในโครงงานนี้ เราประยุกต์ใช้ multiclass classification เพื่อจำแนกเซลล์มะเร็ง ออกเป็น 2 ประเภท
+    ได้แก่ เซลล์ปกติ (normal) และเซลล์ที่ตาย (apoptosis) ซึ่งแต่ละเซลล์จะถูกจัดอยู่ใน
+    คลาสใดคลาสหนึ่ง เท่านั้น
+
+\subsection{Deep Learning และ Neural Networks}
+\paragraph{ความหมายของ Deep Learning}
+Deep learning เป็นกระบวนการฝึกสอน deep neural networks (หรือเรียกสั้นๆ ว่า deep networks) ให้เรียนรู้จากข้อมูล โดย deep neural network เป็นโมเดลประเภทหนึ่งของ machine learning ที่มีประสิทธิภาพสูงและถูกนำไปใช้ในชีวิตประจำวันอย่างแพร่หลาย เช่น การแปลภาษา (natural language processing) การค้นหาภาพ (computer vision) และการรู้จำเสียง (speech recognition) ซึ่งระบบเหล่านี้ล้วนใช้เทคโนโลยี deep learning ทั้งสิ้น \parencite{Prince2023}
+
+Deep learning เป็นส่วนหนึ่งของ machine learning ซึ่งโดยทั่วไปสามารถแบ่งได้เป็นสามประเภทหลัก ได้แก่ supervised learning (การเรียนรู้แบบมีผู้สอน) unsupervised learning (การเรียนรู้แบบไม่มีผู้สอน) และ reinforcement learning (การเรียนรู้เชิงเสริมแรง) โดยปัจจุบัน deep learning มีบทบาทสำคัญในทั้งสามประเภทนี้
+
+\paragraph{Neural Networks คืออะไร}
+Neural network หรือโครงข่ายประสาทเทียม คือโมเดลทางคณิตศาสตร์ที่ได้รับแรงบันดาลใจจากการทำงานของสมองมนุษย์ โดยประกอบด้วยหน่วยประมวลผลพื้นฐานที่เรียกว่า neurons หรือ nodes ซึ่งเชื่อมต่อกันเป็นชั้นๆ (layers) neural network จะทำการเรียนรู้รูปแบบความสัมพันธ์ระหว่างข้อมูลนำเข้า (input) และข้อมูลผลลัพธ์ (output) จากข้อมูลตัวอย่างที่มีอยู่
+
+\paragraph{โครงสร้างของ Neural Networks}
+Neural network ประกอบด้วยส่วนสำคัญสามส่วน คือ
+\begin{description}
+    \item[1. Input Layer (ชั้นนำเข้า)] เป็นชั้นที่รับข้อมูลนำเข้า เช่น ภาพ ข้อความ หรือตัวเลข โดยแต่ละ node ในชั้นนี้จะแทนค่าลักษณะเฉพาะ (feature) หนึ่งๆ ของข้อมูล
+    \item[2. Hidden Layers (ชั้นซ่อน)] เป็นชั้นที่อยู่ระหว่าง input layer และ output layer ทำหน้าที่ประมวลผลและแปลงข้อมูลจากชั้นก่อนหน้า แต่ละ node ในชั้นนี้เรียกว่า hidden unit หรือ neuron โดยจะทำการคำนวณค่า pre-activation (ค่าก่อนผ่าน activation function) แล้วจึงผ่าน activation function เช่น ReLU (Rectified Linear Unit) เพื่อให้ได้ค่า activation ที่จะส่งต่อไปยังชั้นถัดไป
+    \item[3. Output Layer (ชั้นผลลัพธ์)] เป็นชั้นสุดท้ายที่ให้ผลลัพธ์การทำนาย จำนวน node ในชั้นนี้ขึ้นอยู่กับลักษณะของปัญหา เช่น ในปั­ญหา binary classification จะมี 1 หรือ 2 nodes ส่วนใน multi-class classification จะมีจำนวน nodes เท่ากับจำนวนคลาส
+\end{description}
+
+การเชื่อมต่อระหว่างชั้นต่างๆ แทนด้วยพารามิเตอร์ที่เรียกว่า \textbf{weights} (น้ำหนัก) และ \textbf{biases} (ค่าชดเชย) ซึ่งโมเดลจะปรับค่าพารามิเตอร์เหล่านี้ในระหว่างการเรียนรู้เพื่อให้สามารถทำนายได้แม่นยำที่สุด \parencite{Prince2023}
+
+\subsection{Convolutional Neural Networks และ Computer Vision}
+\paragraph{ความเป็นมาและแรงบันดาลใจ}
+Convolutional Neural Networks (CNNs) หรือโครงข่ายประสาทเทียมแบบคอนโวลูชัน เป็น deep neural network ประเภทหนึ่งที่ออกแบบมาโดยเฉพาะสำหรับการประมวลผลข้อมูลที่มีโครงสร้างแบบ grid เช่น ภาพดิจิทัล สัญญาณเสียง และข้อมูลซีรีส์เวลา โดย CNNs ได้รับแรงบันดาลใจจากการทำงานของ visual cortex ในสมองมนุษย์ โดยเฉพาะการค้นพบของ Hubel และ Wiesel เกี่ยวกับ simple cells และ complex cells ที่ตอบสนองต่อลักษณะภาพในบริเวณเฉพาะที่ (local regions) \parencite{Murphy2022}
+
+\paragraph{การทำงานของ Convolutional Layer}
+การดำเนินการ convolution เป็นหัวใจหลักของ CNNs โดยในกรณี 2D (สำหรับภาพ) การ convolution จะทำการคำนวณผลรวมถ่วงน้ำหนักของพิกเซลในบริเวณใกล้เคียงโดยใช้ชุดน้ำหนักเดียวกันทั่วทั้งภาพ ชุดน้ำหนักนี้เรียกว่า convolutional kernel หรือ filter
+
+สำหรับภาพนำเข้าที่มีจำนวน channels เท่ากับ $C_i$ และ kernel ที่มีขนาด $H \times W \times C_i$ การ convolution จะคำนวณค่าที่แต่ละตำแหน่ง $(i, j)$ ของ output feature map โดยการนำค่า bias มาบวกกับผลรวมของผลคูณระหว่างน้ำหนักใน kernel กับพิกเซลในบริเวณที่ครอบคลุม โดยการคำนวณนี้จะทำซ้ำในทุกตำแหน่งของภาพ
+
+\paragraph{Stride และ Padding}
+\textbf{Stride} คือจำนวน pixels ที่เลื่อน kernel ในแต่ละขั้นตอน stride = 1 หมายถึงเลื่อนทีละ 1 pixel ส่วน stride = 2 จะเลื่อนทีละ 2 pixels ซึ่งจะทำให้ output มีขนาดเล็กลง (downsampling)
+
+\textbf{Padding} คือการเพิ่มขอบให้กับภาพนำเข้า โดยมักจะใส่ค่า 0 (zero-padding) เพื่อให้ output มีขนาดเท่ากับ input หรือเพื่อป้องกันไม่ให้ข้อมูลที่ขอบภาพสูญหายไป การ convolution แบบ ``valid'' คือไม่มี padding ทำให้ output เล็กกว่า input ส่วน ``same'' padding จะทำให้ output มีขนาดเท่ากับ input \parencite{Prince2023}
+
+\paragraph{Multiple Channels และ Feature Maps}
+ใน CNN สมัยใหม่ แต่ละ convolutional layer มักจะสร้าง output หลาย channels พร้อมกัน แต่ละ channel เรียกว่า feature map โดยแต่ละ feature map จะเรียนรู้ตรวจจับลักษณะที่แตกต่างกัน เช่น edges, textures, หรือ patterns ที่ซับซ้อนกว่า
+
+\paragraph{Pooling Layers}
+Pooling layers เป็นส่วนสำคัญของ CNNs ที่ทำหน้าที่ลดขนาดของ feature maps (spatial dimensions) และสร้าง partial translation invariance ซึ่งช่วยให้โมเดลไม่ไวต่อการเลื่อนตำแหน่งของวัตถุเล็กน้อยในภาพ
+
+\begin{description}
+    \item[Max Pooling] คือการเลือกค่าสูงสุดจากบริเวณที่กำหนด เช่น ใน $2 \times 2$ max pooling จะเลือกค่าสูงสุดจาก 4 pixels ที่อยู่ใกล้กัน ซึ่งทำให้ขนาดของ feature map ลดลงเป็นครึ่งหนึ่งในแต่ละมิติ
+    \item[Average Pooling] คือการหาค่าเฉลี่ยแทนที่จะเลือกค่าสูงสุด ซึ่งบางครั้งอาจให้ผลลัพธ์ที่นุ่มนวลกว่า
+    \item[Global Average Pooling] คือการหาค่าเฉลี่ยทั่วทั้ง feature map แต่ละตัว ทำให้ feature map ขนาด $H \times W \times D$ กลายเป็น vector ขนาด $D$ มิติ วิธีนี้มักใช้ก่อนชั้น fully connected layer สุดท้าย ช่วยลดจำนวนพารามิเตอร์และทำให้โมเดลสามารถรับภาพขนาดใดก็ได้ \parencite{Murphy2022}
+\end{description}
+
+\subsection{สถาปัตยกรรม CNN}
+\paragraph{แบบแผนการออกแบบทั่วไป}
+รูปแบบการออกแบบ CNN ทั่วไปคือการสลับ convolutional layers กับ pooling layers โดยในแต่ละชั้นจะมีการลด spatial resolution (ขนาดของภาพ) ลงและเพิ่มจำนวน channels ขึ้น สุดท้ายจะมี fully connected layers เพื่อแปลง features เป็นผลลัพธ์สุดท้าย (เช่น class probabilities) \parencite{Murphy2022, Prince2023}
+
+\paragraph{LeNet (1998)}
+LeNet เป็น CNN รุ่นแรกๆ ที่ประสบความสำเร็จ พัฒนาโดย Yann LeCun สำหรับการจดจำตัวเลขเขียนด้วยลายมือ (MNIST) และถูกนำไปใช้จริงในระบบไปรษณีย์ของสหรัฐอเมริกา โครงสร้างประกอบด้วย convolutional layers สลับกับ average pooling layers ตามด้วย fully connected layers
+
+\paragraph{AlexNet (2012)}
+AlexNet เป็น CNN ที่ทำให้ deep learning กลับมาได้รับความนิยมอย่างมาก โดยชนะการแข่งขัน ImageNet Challenge ปี 2012 ด้วยความแม่นยำที่เหนือกว่าวิธีอื่นอย่างมีนัยสำคัญ (top-5 error ลดจาก 26\% เป็น 15\%)
+
+AlexNet มี 8 ชั้นที่ปรับพารามิเตอร์ได้ ประกอบด้วย 5 convolutional layers และ 3 fully connected layers โดยใช้ ReLU activation function แทน tanh, ใช้ dropout สำหรับ regularization และใช้ data augmentation ในการฝึกสอน \parencite{Prince2023}
+
+\paragraph{VGG (2014)}
+VGG network พัฒนาโดย Visual Geometry Group จาก University of Oxford มีโครงสร้างที่ลึกกว่า AlexNet โดยใช้ 19 hidden layers และมีพารามิเตอร์ประมาณ 144 ล้านตัว ความพิเศษของ VGG คือใช้ convolutional layers ขนาดเล็ก ($3 \times 3$) ทั้งหมด และซ้อนกันหลายชั้น แทนที่จะใช้ kernels ขนาดใหญ่
+
+การซ้อน convolutional layers ขนาด $3 \times 3$ สองชั้นจะให้ receptive field เท่ากับ $5 \times 5$ และสามชั้นจะเท่ากับ $7 \times 7$ แต่ใช้พารามิเตอร์น้อยกว่าและมี non-linearity มากกว่า \parencite{Prince2023}
+
+\paragraph{ResNet (2015-2016)}
+Residual Networks (ResNets) นำเสนอแนวคิด residual blocks ที่ช่วยให้สามารถฝึกสอน networks ที่ลึกมากๆ ได้ โดยใช้ skip connections หรือ residual connections ที่เชื่อมข้ามชั้น แทนที่จะให้แต่ละชั้นเรียนรู้ mapping $h = F(x)$ ResNet ให้เรียนรู้ residual $F(x)$ โดยที่ output คือ $h = x + F(x)$
+
+ResNet-200 มี 200 ชั้นและทำผลงานได้ top-5 error เพียง 4.8\% ซึ่งดีกว่ามนุษย์ (5.1\%) ResNets ใช้ batch normalization และ pre-activation residual blocks ที่ช่วยให้ gradients ไหลผ่าน network ได้ดีขึ้น \parencite{Prince2023}
+
+\subsection{การประยุกต์ใช้ CNN ใน Computer Vision}
+\paragraph{Image Classification}
+งาน image classification คือการจำแนกภาพทั้งหมดว่าเป็นหมวดหมู่ใด เช่น การแข่งขัน ImageNet ที่มี 1,000 หมวดหมู่ CNNs ได้พิสูจน์แล้วว่าสามารถทำงานนี้ได้ดีกว่ามนุษย์ โดยใช้ convolutional layers เพื่อสกัด features จากภาพ จากนั้นใช้ fully connected layers และ softmax เพื่อคำนวณความน่าจะเป็นของแต่ละคลาส \parencite{Prince2023}
+
+\paragraph{Object Detection}
+งาน object detection มีความท้าทายมากกว่า classification เพราะต้องไม่เพียงแต่บอกว่ามีวัตถุอะไรในภาพ แต่ยังต้องบอกตำแหน่งของวัตถุแต่ละชิ้นด้วย (bounding boxes) สถาปัตยกรรมที่นิยม เช่น YOLO (You Only Look Once), R-CNN, และ Faster R-CNN ใช้ CNNs เป็นพื้นฐานในการสกัด features
+
+\paragraph{Semantic Segmentation}
+งาน semantic segmentation คือการจำแนกทุก pixel ในภาพว่าเป็นส่วนของวัตถุใด โมเดลต้องมีคุณสมบัติ translation equivariance เพราะหากภาพถูกเลื่อน ผลลัพธ์ก็ควรถูกเลื่อนตามไปด้วย สถาปัตยกรรม encoder-decoder เช่น U-Net มักใช้สำหรับงานนี้ โดยเฉพาะในด้าน medical imaging \parencite{Prince2023}
+
+\subsection{Object Detection}
+Object Detection เป็นงานที่มีความซับซ้อนกว่า Image Classification เนื่องจากต้องทั้งจำแนกประเภท (classification) และระบุตำแหน่ง (localization) ของวัตถุหลายชิ้นในภาพเดียวกัน โดยสถาปัตยกรรมที่นิยมใช้สามารถแบ่งได้เป็น 2 แนวทางหลัก คือ แนวทาง proposal-based และ proposal-free \parencite{Murphy2022}
+
+สถาปัตยกรรมแบบ proposal-based ทำงานในสองขั้นตอน โดยขั้นตอนแรกใช้ CNN สกัดภาพทั้งหมดเพื่อเสนอบริเวณที่อาจมีวัตถุ (region proposals) จากนั้นในขั้นตอนที่สองจึงวิเคราะห์แต่ละบริเวณว่ามีวัตถุอะไรหรือไม่ ตัวอย่างที่สำคัญคือ R-CNN ซึ่งได้รับการพัฒนาต่อยอดเป็น Fast R-CNN และ Faster R-CNN โดย Faster R-CNN ปรับปรุงความเร็วด้วย Region Proposal Network ที่มีประสิทธิภาพสูงขึ้น และรองรับการเรียนรู้แบบ end-to-end
+
+ในทางตรงข้าม แนวทาง proposal-free ทำการประมวลผลในครั้งเดียว (single pass) ทำให้มีความเร็วสูงกว่า โดยตัวอย่างที่โดดเด่นคือ YOLO (You Only Look Once) ซึ่งแบ่งภาพอินพุตเป็นกริด จากนั้นทำนายทั้งประเภทวัตถุและ bounding boxes พร้อมกันในทุกตำแหน่งของกริด ทำให้ YOLO เหมาะสำหรับการใช้งาน real-time detection
+
+\subsection{Class Imbalance}
+ปัญหา Class Imbalance เกิดขึ้นเมื่อจำนวนตัวอย่างในแต่ละคลาสมีความแตกต่างกันอย่างมาก ในบริบทของ Object Detection ปัญหานี้สามารถแบ่งได้เป็นสองประเภทหลัก คือ foreground-background imbalance และ foreground-foreground imbalance \parencite{Crasto2024}
+
+Foreground-foreground imbalance เป็นปัญหาที่เกิดจากความไม่สมดุลระหว่างคลาสของวัตถุด้วยกัน ซึ่งพบได้บ่อยในชุดข้อมูลจริง (long-tailed distribution) การศึกษาเปรียบเทียบวิธีแก้ปัญหา 3 แนวทาง ได้แก่ sampling, loss reweighting และ data augmentation พบว่า data augmentation โดยเฉพาะ mosaic และ mixup augmentation ให้ผลลัพธ์ที่ดีที่สุดสำหรับ one-stage detector เช่น YOLOv5 โดยสามารถเพิ่ม mAP ได้ถึง 2.3\%
+
+\subsection{Svelte}
+Svelte เป็นเฟรมเวิร์กสำหรับสร้างส่วนติดต่อผู้ใช้ (User Interface) ที่แตกต่างจากเฟรมเวิร์กอื่นอย่าง React หรือ Vue ตรงที่ Svelte ทำงานในขั้นตอน compile time แทนที่จะใช้ Virtual DOM ในขณะ runtime \parencite{Svelte_docs} ทำให้แอปพลิเคชันที่สร้างด้วย Svelte มีขนาดเล็กกว่าและทำงานได้เร็วกว่า
+
+จุดเด่นสำคัญของ Svelte ประกอบด้วย:
+\begin{itemize}
+    \item \textbf{No Virtual DOM}: Svelte จะ compile โค้ดเป็น JavaScript ที่ทำการอัปเดต DOM โดยตรง ทำให้ไม่มี overhead ของ Virtual DOM diffing
+    \item \textbf{Reactive by Default}: การจัดการ state ทำได้ง่ายด้วย reactive declarations โดยใช้ \texttt{\$:} syntax
+    \item \textbf{Less Boilerplate}: โค้ดกระชับกว่าเฟรมเวิร์กอื่น ไม่ต้องเขียน hooks หรือ lifecycle methods ซับซ้อน
+    \item \textbf{Built-in Animations}: มีระบบ transitions และ animations ในตัวที่ใช้งานง่าย
+\end{itemize}
+
+\subsection{SvelteKit}
+SvelteKit คือเฟรมเวิร์กแบบ full-stack สำหรับการสร้างเว็บแอปพลิเคชันด้วย Svelte \parencite{SvelteKit_docs} โดยมีฟีเจอร์ครบครันสำหรับการพัฒนาแอปพลิเคชันสมัยใหม่ รวมถึง:
+\begin{itemize}
+    \item \textbf{File-based Routing}: ระบบ routing อัตโนมัติตามโครงสร้างโฟลเดอร์ในไดเรกทอรี \texttt{src/routes}
+    \item \textbf{Server-Side Rendering (SSR)}: รองรับการ render หน้าเว็บฝั่ง server เพื่อ SEO และประสิทธิภาพที่ดีขึ้น
+    \item \textbf{Static Site Generation (SSG)}: สามารถ pre-render หน้าเว็บเป็นไฟล์ static ได้
+    \item \textbf{API Routes}: สร้าง API endpoints ได้โดยตรงในโปรเจค
+    \item \textbf{TypeScript Support}: รองรับ TypeScript อย่างเต็มรูปแบบ
+\end{itemize}
+
+ในโครงงานนี้ใช้ SvelteKit สำหรับพัฒนาส่วน Frontend โดยมีโครงสร้างหลักดังนี้:
+\begin{itemize}
+    \item \texttt{src/routes/(auth)/} สำหรับหน้า login และ register
+    \item \texttt{src/routes/(app)/} สำหรับหน้าหลักของแอปพลิเคชันที่ต้องผ่านการ authentication
+    \item \texttt{src/lib/api/} สำหรับ API client ที่เชื่อมต่อกับ backend
+    \item \texttt{src/lib/stores/} สำหรับจัดการ state ของแอปพลิเคชัน
+\end{itemize}
+
+\subsection{Rust และ Actix-web}
+Rust เป็นภาษาโปรแกรมมิ่งระดับระบบ (systems programming language) ที่พัฒนาโดย Mozilla โดยมุ่งเน้นความปลอดภัย ความเร็ว และ concurrency \parencite{Rust_docs} จุดเด่นสำคัญของ Rust คือระบบ ownership และ borrow checker ที่ป้องกันข้อผิดพลาดด้าน memory safety ได้ในขั้นตอน compile time โดยไม่ต้องใช้ garbage collector
+
+Actix-web เป็นเว็บเฟรมเวิร์กสำหรับ Rust ที่มีประสิทธิภาพสูงและรองรับ asynchronous programming \parencite{Actix_docs} โดยมีคุณสมบัติเด่นดังนี้:
+\begin{itemize}
+    \item \textbf{High Performance}: เป็นหนึ่งในเว็บเฟรมเวิร์กที่เร็วที่สุดตาม TechEmpower benchmarks
+    \item \textbf{Type Safety}: ใช้ประโยชน์จากระบบ type ของ Rust เพื่อป้องกันข้อผิดพลาดในขณะ compile
+    \item \textbf{Async/Await}: รองรับ asynchronous programming แบบ native
+    \item \textbf{Middleware Support}: มีระบบ middleware ที่ยืดหยุ่นสำหรับการจัดการ requests
+    \item \textbf{WebSocket Support}: รองรับ WebSocket connections
+\end{itemize}
+
+ในโครงงานนี้ใช้ Actix-web ร่วมกับไลบรารีสำคัญดังนี้:
+\begin{itemize}
+    \item \textbf{SQLx}: ไลบรารีสำหรับเชื่อมต่อฐานข้อมูลแบบ async พร้อม compile-time query verification
+    \item \textbf{rusty\_paseto}: สำหรับสร้างและตรวจสอบ PASETO tokens (Platform-Agnostic Security Tokens)
+    \item \textbf{Argon2}: อัลกอริทึมสำหรับ hash รหัสผ่านที่มีความปลอดภัยสูง
+    \item \textbf{rust-s3}: ไลบรารีสำหรับเชื่อมต่อกับ S3-compatible storage เช่น MinIO
+    \item \textbf{lapin}: ไลบรารีสำหรับเชื่อมต่อกับ RabbitMQ
+    \item \textbf{utoipa}: สำหรับสร้าง OpenAPI documentation อัตโนมัติ
+\end{itemize}
+
+\subsection{Website}
+เว็บไซต์ (Website) คือชุดของหน้าเว็บเพจที่เชื่อมโยงถึงกันและสามารถเข้าถึงได้ผ่านเครือข่ายอินเทอร์เน็ต โดยเว็บไซต์มีโดเมนเนม (Domain Name) เป็นตัวระบุหลักและมักประกอบด้วยข้อความ รูปภาพ วิดีโอ เสียง และลิงก์ที่ผู้ใช้สามารถโต้ตอบได้ \parencite{Mozilla_WWW}
+
+เว็บไซต์ถูกสร้างขึ้นโดยใช้ภาษามาร์กอัป เช่น HTML (HyperText Markup Language) สำหรับกำหนดโครงสร้างและความหมายของเนื้อหา ภาษาสไตล์ชีต เช่น CSS (Cascading Style Sheets) เพื่อจัดรูปแบบการแสดงผล และภาษาโปรแกรม เช่น JavaScript เพื่อเพิ่มความสามารถในการโต้ตอบและการทำงานแบบไดนามิก
+
+\subsection{Web Application}
+เว็บแอปพลิเคชัน (Web Application) หรือเว็บแอป คือซอฟต์แวร์แอปพลิเคชันที่ทำงานบนเว็บเซิร์ฟเวอร์ระยะไกลและสามารถเข้าถึงได้ผ่านเว็บเบราว์เซอร์โดยไม่จำเป็นต้องดาวน์โหลดหรือติดตั้งบนอุปกรณ์ของผู้ใช้ \parencite{AWS_WebApp}
+
+เว็บแอปพลิเคชันทำงานบนโมเดล client-server โดยมีสามองค์ประกอบหลัก ได้แก่ เว็บเซิร์ฟเวอร์ (Web Server) สำหรับจัดการคำขอจากผู้ใช้ แอปพลิเคชันเซิร์ฟเวอร์ (Application Server) สำหรับประมวลผลงานที่ร้องขอ และฐานข้อมูล (Database) สำหรับเก็บและดึงข้อมูล
+
+\subsection{DigitalOcean}
+DigitalOcean คือผู้ให้บริการคลาวด์คอมพิวติ้งที่มีสำนักงานใหญ่ในนิวยอร์ก ซึ่งให้บริการแพลตฟอร์ม Infrastructure-as-a-Service (IaaS) และ Platform-as-a-Service (PaaS) โดยเฉพาะสำหรับนักพัฒนาซอฟต์แวร์ สตาร์ทอัพ และธุรกิจขนาดเล็กถึงกลาง \parencite{Cloudwards_DigitalOcean}
+
+ผลิตภัณฑ์หลักของ DigitalOcean คือ Droplets ซึ่งเป็นเครื่องเสมือน (Virtual Machines) ที่ใช้ระบบปฏิบัติการ Linux โดย Droplets มีความยืดหยุ่นในการเลือกขนาด ภูมิภาค และศูนย์ข้อมูลที่ต้องการใช้งาน
+
+\subsection{Docker}
+Docker คือแพลตฟอร์มซอฟต์แวร์โอเพนซอร์สที่ช่วยให้นักพัฒนาสามารถสร้าง ทดสอบ และปรับใช้แอปพลิเคชันได้อย่างรวดเร็วโดยใช้คอนเทนเนอร์ (Containers) \parencite{AWS_Docker} Docker บรรจุซอฟต์แวร์เป็นหน่วยมาตรฐานที่เรียกว่าคอนเทนเนอร์ ซึ่งประกอบด้วยทุกสิ่งที่ซอฟต์แวร์ต้องการในการทำงาน รวมถึงไลบรารี เครื่องมือระบบ โค้ด และ runtime ทำให้สามารถปรับใช้และขยายขนาดแอปพลิเคชันในสภาพแวดล้อมใดก็ได้อย่างรวดเร็ว
+
+Docker ทำงานโดยใช้ Docker Engine ซึ่งเป็นเทคโนโลยีคอนเทนเนอร์ไรเซชันโอเพนซอร์สที่ช่วยสร้างและจัดการคอนเทนเนอร์ \parencite{IBM_Docker} คอนเทนเนอร์เป็นสภาพแวดล้อมที่แยกออกจากกันและมาพร้อมกับซอฟต์แวร์ ไลบรารี และไฟล์การกำหนดค่าของตัวเอง โดยคอนเทนเนอร์ทั้งหมดใช้ kernel ของระบบปฏิบัติการเดียวกันร่วมกัน จึงใช้ทรัพยากรน้อยกว่า Virtual Machines
+
+ในโครงงานนี้ใช้ Docker และ Docker Compose ในการจัดการ services ต่างๆ โดยมี Docker images หลักดังนี้:
+\begin{itemize}
+    \item \textbf{postgres:16-alpine}: ฐานข้อมูล PostgreSQL เวอร์ชัน 16 บน Alpine Linux สำหรับเก็บข้อมูลผู้ใช้ โฟลเดอร์ รูปภาพ และผลการวิเคราะห์
+    \item \textbf{minio/minio:latest}: MinIO Object Storage ที่เข้ากันได้กับ Amazon S3 API สำหรับจัดเก็บไฟล์รูปภาพ
+    \item \textbf{rabbitmq:3-management-alpine}: RabbitMQ Message Broker พร้อม Management UI สำหรับจัดคิวงานวิเคราะห์
+    \item \textbf{dpage/pgadmin4:latest}: เครื่องมือจัดการฐานข้อมูล PostgreSQL ผ่านเว็บ (optional)
+\end{itemize}
+
+\subsection{PostgreSQL}
+PostgreSQL เป็นระบบจัดการฐานข้อมูลเชิงสัมพันธ์แบบโอเพนซอร์ส (Open-source RDBMS) ที่มีความน่าเชื่อถือสูงและรองรับมาตรฐาน SQL อย่างครบถ้วน \parencite{PostgreSQL_docs} จุดเด่นของ PostgreSQL ประกอบด้วย:
+\begin{itemize}
+    \item \textbf{ACID Compliance}: รับประกันความถูกต้องของ transactions
+    \item \textbf{Extensibility}: รองรับ custom data types, functions และ extensions
+    \item \textbf{JSON/JSONB Support}: สามารถเก็บและ query ข้อมูล JSON ได้อย่างมีประสิทธิภาพ
+    \item \textbf{Full-text Search}: รองรับการค้นหาข้อความแบบเต็มรูปแบบ
+    \item \textbf{Concurrency}: ใช้ MVCC (Multi-Version Concurrency Control) ทำให้รองรับผู้ใช้พร้อมกันได้มาก
+\end{itemize}
+
+ในโครงงานนี้ใช้ PostgreSQL สำหรับเก็บข้อมูลหลักของระบบ ได้แก่ ข้อมูลผู้ใช้ (users), โฟลเดอร์ (folders), รูปภาพ (images), งานวิเคราะห์ (jobs) และผลการวิเคราะห์ (analysis\_results)
+
+\subsection{MinIO}
+MinIO เป็น Object Storage Server แบบโอเพนซอร์สที่มี API เข้ากันได้กับ Amazon S3 \parencite{MinIO_docs} ทำให้สามารถใช้งานร่วมกับ tools และ libraries ที่รองรับ S3 ได้โดยตรง จุดเด่นของ MinIO ประกอบด้วย:
+\begin{itemize}
+    \item \textbf{S3 Compatible}: API เข้ากันได้กับ Amazon S3 100\%
+    \item \textbf{High Performance}: ออกแบบมาสำหรับ high-throughput workloads
+    \item \textbf{Kubernetes Native}: รองรับการ deploy บน Kubernetes ได้ง่าย
+    \item \textbf{Data Protection}: รองรับ erasure coding และ bitrot protection
+\end{itemize}
+
+ในโครงงานนี้ใช้ MinIO สำหรับจัดเก็บไฟล์รูปภาพจุลทรรศน์ที่ผู้ใช้อัปโหลด และรูปภาพผลการวิเคราะห์ที่มี bounding boxes
+
+\subsection{RabbitMQ}
+RabbitMQ เป็น Message Broker แบบโอเพนซอร์สที่ใช้โปรโตคอล AMQP (Advanced Message Queuing Protocol) \parencite{RabbitMQ_docs} ทำหน้าที่เป็นตัวกลางในการส่งข้อความระหว่าง services ต่างๆ จุดเด่นของ RabbitMQ ประกอบด้วย:
+\begin{itemize}
+    \item \textbf{Reliability}: รองรับ message persistence และ delivery acknowledgements
+    \item \textbf{Flexible Routing}: รองรับรูปแบบการ routing ที่หลากหลาย เช่น direct, topic, fanout
+    \item \textbf{Clustering}: สามารถ scale horizontally ด้วยการทำ cluster
+    \item \textbf{Management UI}: มี web-based UI สำหรับ monitoring และจัดการ queues
+\end{itemize}
+
+ในโครงงานนี้ใช้ RabbitMQ สำหรับจัดคิวงานวิเคราะห์เซลล์ โดย Backend จะส่ง job message ไปยัง queue และ Model Worker จะรับ message มาประมวลผล ทำให้ระบบสามารถรองรับการวิเคราะห์แบบ asynchronous และ scale ได้ง่าย
+
+\subsection{PASETO (Platform-Agnostic Security Tokens)}
+PASETO เป็นมาตรฐานสำหรับสร้าง security tokens ที่ออกแบบมาเพื่อแก้ปัญหาความปลอดภัยของ JWT (JSON Web Tokens) \parencite{PASETO_spec} PASETO มีหลักการออกแบบที่สำคัญคือ:
+\begin{itemize}
+    \item \textbf{No Algorithm Confusion}: ไม่อนุญาตให้เลือก algorithm ใน token ป้องกัน algorithm confusion attacks
+    \item \textbf{Versioned Protocol}: แบ่งเป็น versions ที่ชัดเจน แต่ละ version กำหนด algorithms ตายตัว
+    \item \textbf{Two Purposes}: แบ่งเป็น local (symmetric encryption) และ public (asymmetric signatures)
+\end{itemize}
+
+ในโครงงานนี้ใช้ PASETO Version 4 Local สำหรับสร้าง Access Token และ Refresh Token โดยใช้ symmetric encryption (XChaCha20-Poly1305) ซึ่งให้ความปลอดภัยสูงกว่า JWT และป้องกันการโจมตีแบบต่างๆ ที่พบบ่อยใน JWT
+
+\section{งานวิจัยที่เกี่ยวข้อง}
+
+\subsection{Label-Free Tumor Cells Classification Using Deep Learning}
+งานวิจัยนี้ดำเนินการโดย Piansaddhayanon และคณะ จาก National Cancer Institute ประเทศสหรัฐอเมริกา เผยแพร่ในวารสาร Scientific Data ของ Springer Nature ปี 2023 \parencite{Piansaddhayanon2023} งานวิจัยนี้มุ่งเน้นการจำแนกเซลล์มะเร็งจากเซลล์ปกติในภาพจุลทรรศน์ชนิด bright-field โดยใช้เทคนิค Deep Learning โดยไม่ต้องใช้การติดฉลากแบบพิเศษ (label-free)
+
+นักวิจัยได้สร้างชุดข้อมูลกว่า 75,000 ภาพของเซลล์ที่ได้จากออร์แกนอยด์ของผู้ป่วยมะเร็ง 3 ราย และนำมาพัฒนาโมเดล CNN เพื่อทำการจำแนก ผลการวิจัยแสดงให้เห็นว่าโมเดลสามารถเรียนรู้ลักษณะทางสัณฐานวิทยาที่ซับซ้อนได้อย่างมีประสิทธิภาพและช่วยเพิ่มความแม่นยำในการวิเคราะห์เซลล์มะเร็งจากภาพจุลทรรศน์ได้อย่างมาก
+
+\textbf{จุดเด่น:}
+\begin{itemize}
+    \item ไม่ต้องใช้ป้าย fluorescence
+    \item มาจาก organoid ของผู้ป่วยจริง
+    \item มีทั้งเซลล์มะเร็งและเซลล์ปกติจากผู้ป่วยคนเดียวกัน
+\end{itemize}
+
+\textbf{ข้อจำกัด:}
+\begin{itemize}
+    \item การทำ crop cell จากภาพอาจสร้าง bias
+    \item ขาดความหลากหลายทางชีวภาพ
+    \item ยังไม่ครอบคลุมมะเร็งชนิดอื่น
+\end{itemize}
+
+\subsection{A Multi-Phase Deep CNN Based Mitosis Detection Framework for Breast Cancer Histopathological Images}
+งานวิจัยนี้จัดทำโดย Sohail และคณะ จาก University of Malaya ประเทศมาเลเซีย เผยแพร่ในวารสาร Scientific Reports ปี 2021 \parencite{Sohail2021} โดยมีวัตถุประสงค์เพื่อพัฒนาโมเดล Convolutional Neural Network (CNN) สำหรับการตรวจหาการแบ่งตัวของเซลล์ (mitosis) ในภาพเนื้อเยื่อมะเร็งเต้านมที่ย้อมสี H\&E
+
+งานวิจัยได้ออกแบบกรอบการทำงานแบบหลายขั้นตอน (multi-phase framework) ที่ประกอบด้วยการตรวจหาบริเวณที่น่าสนใจและการจำแนกโดยใช้โมเดล CNN ขั้นสูง ชุดข้อมูลที่ใช้ประกอบด้วย TUPAC16 และ ICPR datasets ผลการวิจัยพบว่าโมเดลสามารถตรวจหาการแบ่งตัวของเซลล์ได้อย่างแม่นยำ โดยให้ค่า F-score สูงสุดประมาณ 0.75 บน TUPAC16 dataset
+
+\textbf{จุดเด่น:}
+\begin{itemize}
+    \item แก้ปัญหา mitosis detection
+    \item พยายามคุมความแปรปรวนของ data โดยนำ images จากหลาย dataset มาผสมเพิ่มความหลากหลาย
+    \item ระบบที่แบ่งเป็นหลายขั้นตอนย่อย
+\end{itemize}
+
+\textbf{ข้อจำกัด:}
+\begin{itemize}
+    \item โมเดลอาจทำงานไม่ดีเมื่อเจอ slide/data ที่แตกต่าง
+    \item ยังไม่รองรับ workflow จริง
+\end{itemize}
+
+\subsection{Deep Learning-Based Classification of Cancer Cells in CSF}
+งานวิจัยนี้ดำเนินการโดย Yu และคณะ จาก Peking Union Medical College Hospital ประเทศจีน เผยแพร่ในวารสาร Frontiers in Oncology ปี 2022 \parencite{Yu2022} งานวิจัยนี้มุ่งเน้นการจำแนกเซลล์มะเร็งในน้ำไขสันหลัง (CSF) ของผู้ป่วยที่มีภาวะ leptomeningeal metastasis โดยใช้เทคนิค Deep Learning
+
+นักวิจัยได้รวบรวมภาพเซลล์จำนวน 53,255 ภาพ ซึ่งประกอบด้วยเซลล์เม็ดเลือดขาว เซลล์มะเร็ง และเซลล์ชนิดอื่นๆ เพื่อนำมาฝึกและทดสอบโมเดล CNN สองแบบ ผลการทดลองแสดงให้เห็นว่าโมเดลสามารถจำแนกเซลล์มะเร็งได้อย่างแม่นยำ และประสิทธิภาพใกล้เคียงกับผู้เชี่ยวชาญทางห้องปฏิบัติการ
+
+\textbf{จุดเด่น:}
+\begin{itemize}
+    \item โมเดลรองรับข้อมูลภาพขนาดเล็กของเซลล์ได้ดี
+    \item Pipeline ออกแบบมาสำหรับ scaling ภาพจำนวนมาก
+    \item การแบ่งงานเป็นสองโมเดลแยกกัน ทำให้สามารถอัปเกรดโมเดลใดโมเดลหนึ่งได้ง่าย
+\end{itemize}
+
+\textbf{ข้อจำกัด:}
+\begin{itemize}
+    \item ไม่รองรับ rare cancers หรือ unseen classes
+    \item ยังไม่รองรับ cloud deployment
+    \item ขาด data diversity เช่นผู้ป่วยต่างเชื้อชาติ
+\end{itemize}
+
+\clearpage
+
+\subsection{เปรียบเทียบระบบงานใกล้เคียงกับระบบที่พัฒนา}
+
+ส่วนนี้เป็นการเปรียบเทียบระบบที่พัฒนากับงานวิจัยและระบบที่เกี่ยวข้อง 
+เพื่อแสดงให้เห็นถึงความแตกต่างและจุดเด่นของโครงงาน โดยพิจารณาจากปัจจัยสำคัญ 
+ได้แก่ เทคโนโลยีที่เลือกใช้ ฐานข้อมูล (Dataset) ลักษณะภาพถ่ายจุลทรรศน์ ประสิทธิภาพความแม่นยำ 
+รวมถึงข้อจำกัดต่างๆ การเปรียบเทียบนี้จะช่วยระบุตำแหน่งทางวิชาการและแนวทางการต่อยอดของระบบที่พัฒนาขึ้น 
+รายละเอียดดังแสดงในตารางที่ \ref{tab:comparison}
+
+\begin{table}[h!]
+\centering
+\begin{threeparttable}
+    \caption{ตารางเปรียบเทียบคุณสมบัติของระบบที่พัฒนากับงานวิจัยที่เกี่ยวข้อง}
+    \label{tab:comparison}
+
+    \renewcommand{\arraystretch}{1.3}
+    \setlength{\tabcolsep}{4pt}
+    \small
+    
+    \begin{tabular}{@{} c l c c c c @{}}
+    \toprule
+    \textbf{ลำดับ} & \textbf{คุณสมบัติ} & \textbf{Our System} & \textbf{[P]} & \textbf{[S]} & \textbf{[Y]} \\
+    \midrule
+    1 & ใช้ Deep Learning จำแนกเซลล์ & \cmark & \cmark & \cmark & \cmark \\
+    2 & จำแนกหลายประเภทเซลล์ & \cmark & \cmark & \xmark & \cmark \\
+    3 & ตรวจสอบระยะ Mitosis & \xmark & \xmark & \cmark & \xmark \\
+    4 & ใช้ภาพจุลทรรศน์ & \cmark & \cmark & \xmark & \cmark \\
+    5 & วิเคราะห์เซลล์ปกติ & \cmark & \cmark & \xmark & \cmark \\
+    6 & ใช้ข้อมูลจากผู้ป่วยจริง & \xmark & \cmark & \cmark & \cmark \\
+    \rowcolor{blue!10} 
+    7 & วิเคราะห์เซลล์ระยะ Apoptosis & \cmark & \xmark & \xmark & \xmark \\
+    \rowcolor{blue!10}
+    8 & เชื่อม Web Application & \cmark & \xmark & \xmark & \xmark \\
+    \rowcolor{blue!10}
+    9 & คำนวณเปอร์เซ็นต์การตายเซลล์ & \cmark & \xmark & \xmark & \xmark \\
+    \rowcolor{blue!10}
+    10 & บันทึกผลย้อนหลัง & \cmark & \xmark & \xmark & \xmark \\
+    \bottomrule
+    \end{tabular}
+
+    \begin{tablenotes}
+      \small
+      \item \textbf{หมายเหตุ:} [P] = \cite{Piansaddhayanon2023}, [S] = \cite{Sohail2021}, [Y] = \cite{Yu2022}
+    \end{tablenotes}
+\end{threeparttable}
+\end{table}

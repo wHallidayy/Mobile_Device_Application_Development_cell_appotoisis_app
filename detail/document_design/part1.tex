@@ -1,0 +1,51 @@
+\section{ความต้องการทั้งหมด + สิ่งที่จะทำในรายวิชานี้}
+
+\subsection{ภาพรวมของระบบ}
+
+\subsection{วิเคราะห์ความต้องการเป็นฟังก์ชัน (Functional Requirements)}
+
+\subsubsection{Authentication Module (ระบบยืนยันตัวตน)}
+\begin{itemize}
+    \item ระบบลงทะเบียนผู้ใช้ใหม่ (Register) พร้อมข้อมูลพื้นฐาน
+    \item ระบบเข้าสู่ระบบ (Login) ด้วย Username และ Password
+    \item ระบบออกจากระบบ (Logout)
+    \item แยก Account ของผู้ใช้แต่ละคนโดยเด็ดขาด ไม่สามารถแชร์ข้อมูลระหว่างผู้ใช้ได้
+\end{itemize}
+
+\subsubsection{Folder Management Module (ระบบจัดการโฟลเดอร์)}
+\begin{itemize}
+    \item สร้างโฟลเดอร์ใหม่ (Create Folder)
+    \item แก้ไชื่อโฟลเดอร์ (Rename Folder)
+    \item ลบโฟลเดอร์ (Delete Folder)
+    \item แสดงรายการโฟลเดอร์ทั้งหมดของผู้ใช้
+    \item \textbf{กฎพิเศษ:} โฟลเดอร์มีโครงสร้างแบบ Flat (ไม่สามารถซ้อนโฟลเดอร์ได้)
+\end{itemize}
+
+\subsubsection{Image Management Module (ระบบจัดการภาพ)}
+\begin{itemize}
+    \item นำเข้าภาพจาก Gallery ของอุปกรณ์
+    \item ดูรายละเอียด Metadata ของภาพ (ขนาดไฟล์, ขนาดภาพ)
+    \item ลบภาพออกจากระบบ
+    \item \textbf{กฎพิเศษ:} ภาพทุกภาพต้องถูกจัดเก็บในโฟลเดอร์ใดโฟลเดอร์หนึ่งเสมอ (ห้ามมีภาพที่ไม่อยู่ในโฟลเดอร์)
+\end{itemize}
+
+\subsubsection{AI Analysis Integration Module (ระบบวิเคราะห์ภาพด้วย AI)}
+\begin{itemize}
+    \item ส่งภาพไปยัง Deep Learning Classification Model ผ่าน API
+    \item รับผลการวิเคราะห์และแสดงผล โดยผลลัพธ์จะจำแนกเป็น 3 คลาส:
+    \begin{itemize}
+        \item \textbf{Viable:} เซลล์มีชีวิตปกติ
+        \item \textbf{Apoptosis:} เซลล์กำลังตาย
+        \item \textbf{Other:} เซลล์หรือวัตถุที่ Model ตรวจพบแต่ไม่อยู่ในสองกลุ่มแรก
+    \end{itemize}
+    \item บันทึกผลการวิเคราะห์ลงฐานข้อมูลพร้อมกับภาพ
+    \item แสดงประวัติการวิเคราะห์ของแต่ละภาพ
+\end{itemize}
+
+\subsection{Non-Functional Requirements (ความต้องการด้านคุณภาพ)}
+\begin{itemize}
+    \item \textbf{ความปลอดภัย (Security):} ข้อมูลแต่ละ Account แยกกันโดยสิ้นเชิง
+    \item \textbf{ความเป็นส่วนตัว (Privacy):} ผู้ใช้ไม่สามารถแชร์ผลการวิเคราะห์จาก AI ให้ผู้อื่นได้
+    \item \textbf{ประสิทธิภาพ (Performance):} การประมวลผล AI ต้องไม่ทำให้แอปค้าง
+    \item \textbf{ความใช้งานง่าย (Usability):} UI/UX เหมาะสมกับผู้ใช้ที่เป็นนักวิจัยและนักศึกษา
+\end{itemize}
