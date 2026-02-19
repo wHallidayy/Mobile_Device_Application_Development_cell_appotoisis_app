@@ -48,6 +48,17 @@ async fn main() -> Result<()> {
 
     tracing::info!("Database pool created");
 
+    // Run database migrations
+    tracing::info!("Running database migrations...");
+    match sqlx::migrate!("./migrations").run(&pool).await {
+        Ok(_) => tracing::info!("Database migrations executed successfully"),
+        Err(e) => {
+            tracing::error!("Failed to execute database migrations: {:?}", e);
+            // Optional: panic if migrations fail, as the app might not work without them
+            // panic!("Failed to execute database migrations");
+        }
+    }
+
     // Initialize S3 storage service
     let s3_storage = services::S3StorageService::new(&config.storage)
         .expect("Failed to create S3 storage service");

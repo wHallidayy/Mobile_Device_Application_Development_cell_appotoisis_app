@@ -1,7 +1,16 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 use validator::Validate;
+
+/// Custom deserializer to trim whitespace
+fn trim_whitespace<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s: String = Deserialize::deserialize(deserializer)?;
+    Ok(s.trim().to_string())
+}
 
 /// Custom password validator following NIST SP 800-63B guidelines
 /// Requires:
@@ -47,6 +56,7 @@ fn validate_strong_password(password: &str) -> Result<(), validator::ValidationE
 /// Register request DTO
 #[derive(Debug, Clone, Deserialize, Validate, ToSchema)]
 pub struct RegisterRequest {
+    #[serde(deserialize_with = "trim_whitespace")]
     #[validate(length(min = 3, max = 255, message = "Username must be between 3 and 255 characters"))]
     pub username: String,
 

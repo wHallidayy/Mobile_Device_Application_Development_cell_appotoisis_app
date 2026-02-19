@@ -22,6 +22,16 @@ export default function RegisterScreen() {
                     const [isSubmitting, setIsSubmitting] = useState(false);
                     const { register } = useAuth();
 
+                    const validations = [
+                                        { id: 'length', text: 'At least 12 characters', valid: password.length >= 12 },
+                                        { id: 'upper', text: 'At least one uppercase letter', valid: /[A-Z]/.test(password) },
+                                        { id: 'lower', text: 'At least one lowercase letter', valid: /[a-z]/.test(password) },
+                                        { id: 'digit', text: 'At least one digit', valid: /\d/.test(password) },
+                                        { id: 'special', text: 'At least one special character', valid: /[^A-Za-z0-9]/.test(password) },
+                    ];
+
+                    const isPasswordValid = validations.every((v) => v.valid);
+
                     const handleRegister = async () => {
                                         if (!username.trim() || !password.trim()) {
                                                             Alert.alert('Error', 'Please fill in all fields');
@@ -33,14 +43,14 @@ export default function RegisterScreen() {
                                                             return;
                                         }
 
-                                        if (password.length < 8) {
-                                                            Alert.alert('Error', 'Password must be at least 8 characters');
+                                        if (!isPasswordValid) {
+                                                            Alert.alert('Error', 'Please ensure your password meets all requirements.');
                                                             return;
                                         }
 
                                         setIsSubmitting(true);
                                         try {
-                                                            await register(username, password);
+                                                            await register(username.trim(), password);
                                                             router.replace('/(tabs)');
                                         } catch (error: any) {
                                                             const message = error.response?.data?.error?.message || 'Registration failed. Please try again.';
@@ -62,11 +72,6 @@ export default function RegisterScreen() {
                                                                                 <View style={styles.content}>
                                                                                                     {/* Header */}
                                                                                                     <View style={styles.header}>
-          {/* <                                                                                                              <View style={styles.logoContainer}>
-                                                                                                                                            <View style={styles.logoIcon}>
-                                                                                                                                                                <Text style={styles.logoText}>🔬</Text>
-                                                                                                                                            </View>
-                                                                                                                        </View>> */}
                                                                                                                         <Text style={styles.title}>Create Account</Text>
                                                                                                                         <Text style={styles.subtitle}>Sign up to get started</Text>
                                                                                                     </View>
@@ -96,6 +101,21 @@ export default function RegisterScreen() {
                                                                                                                                                                 onChangeText={setPassword}
                                                                                                                                                                 secureTextEntry
                                                                                                                                             />
+                                                                                                                                            {/* Password Requirements */}
+                                                                                                                                            {password.length > 0 && (
+                                                                                                                                                                <View style={styles.requirementsContainer}>
+                                                                                                                                                                                    {validations.map((val) => (
+                                                                                                                                                                                                        <View key={val.id} style={styles.requirementRow}>
+                                                                                                                                                                                                                            <Text style={[styles.requirementIcon, val.valid ? styles.textSuccess : styles.textError]}>
+                                                                                                                                                                                                                                                {val.valid ? '✓' : '○'}
+                                                                                                                                                                                                                            </Text>
+                                                                                                                                                                                                                            <Text style={[styles.requirementText, val.valid ? styles.textSuccess : styles.textMuted]}>
+                                                                                                                                                                                                                                                {val.text}
+                                                                                                                                                                                                                            </Text>
+                                                                                                                                                                                                        </View>
+                                                                                                                                                                                    ))}
+                                                                                                                                                                </View>
+                                                                                                                                            )}
                                                                                                                         </View>
 
                                                                                                                         <View style={styles.inputContainer}>
@@ -111,9 +131,12 @@ export default function RegisterScreen() {
                                                                                                                         </View>
 
                                                                                                                         <TouchableOpacity
-                                                                                                                                            style={[styles.button, isSubmitting && styles.buttonDisabled]}
+                                                                                                                                            style={[
+                                                                                                                                                                styles.button,
+                                                                                                                                                                (isSubmitting || (password.length > 0 && !isPasswordValid)) && styles.buttonDisabled
+                                                                                                                                            ]}
                                                                                                                                             onPress={handleRegister}
-                                                                                                                                            disabled={isSubmitting}
+                                                                                                                                            disabled={isSubmitting || (password.length > 0 && !isPasswordValid)}
                                                                                                                         >
                                                                                                                                             {isSubmitting ? (
                                                                                                                                                                 <ActivityIndicator color={Colors.white} />
@@ -156,20 +179,6 @@ const styles = StyleSheet.create({
                                         alignItems: 'center',
                                         marginBottom: 32,
                     },
-                    logoContainer: {
-                                        marginBottom: 16,
-                    },
-                    logoIcon: {
-                                        width: 80,
-                                        height: 80,
-                                        borderRadius: 20,
-                                        backgroundColor: Colors.primaryDark,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                    },
-                    logoText: {
-                                        fontSize: 40,
-                    },
                     title: {
                                         fontSize: 28,
                                         fontWeight: '700',
@@ -200,6 +209,32 @@ const styles = StyleSheet.create({
                                         paddingVertical: 14,
                                         fontSize: 16,
                                         color: Colors.textPrimary,
+                    },
+                    requirementsContainer: {
+                                        marginTop: 8,
+                                        gap: 4,
+                                        paddingLeft: 4,
+                    },
+                    requirementRow: {
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        gap: 8,
+                    },
+                    requirementIcon: {
+                                        fontSize: 14,
+                                        fontWeight: 'bold',
+                    },
+                    requirementText: {
+                                        fontSize: 12,
+                    },
+                    textSuccess: {
+                                        color: Colors.syncSuccess,
+                    },
+                    textError: {
+                                        color: Colors.syncFailed,
+                    },
+                    textMuted: {
+                                        color: Colors.textMuted,
                     },
                     button: {
                                         backgroundColor: Colors.primaryDark,

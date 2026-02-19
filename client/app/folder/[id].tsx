@@ -28,6 +28,7 @@ import { analysisService, AnalysisResultResponse } from '@/services/analysisServ
 import { imageCacheService } from '@/services/imageCacheService';
 import { networkService } from '@/services/networkService';
 import * as Haptics from 'expo-haptics';
+import { validateFolderName } from '@/utils/validation';
 
 interface FileItemProps {
     image: Image;
@@ -432,8 +433,9 @@ export default function FolderDetailScreen() {
     };
 
     const handleRename = async () => {
-        if (!newFolderName.trim()) {
-            Alert.alert('Error', 'Folder name cannot be empty');
+        const validation = validateFolderName(newFolderName);
+        if (!validation.isValid) {
+            Alert.alert('Invalid Name', validation.error);
             return;
         }
 

@@ -101,15 +101,17 @@ pub async fn create_folder(
         }
     };
 
+    let request = body.into_inner();
+
     // Validate request
-    if let Err(errors) = body.validate() {
+    if let Err(errors) = request.validate() {
         return HttpResponse::BadRequest().json(ApiResponse::<()>::error(
             "VALIDATION_ERROR",
             format!("Validation failed: {}", errors),
         ));
     }
 
-    match FolderRepository::create(pool.get_ref(), user.user_id, &body.folder_name).await {
+    match FolderRepository::create(pool.get_ref(), user.user_id, &request.folder_name).await {
         Ok(folder) => HttpResponse::Created().json(ApiResponse::success(FolderResponse {
             folder_id: folder.folder_id,
             folder_name: folder.folder_name,
@@ -165,15 +167,17 @@ pub async fn rename_folder(
 
     let folder_id = path.into_inner();
 
+    let request = body.into_inner();
+
     // Validate request
-    if let Err(errors) = body.validate() {
+    if let Err(errors) = request.validate() {
         return HttpResponse::BadRequest().json(ApiResponse::<()>::error(
             "VALIDATION_ERROR",
             format!("Validation failed: {}", errors),
         ));
     }
 
-    match FolderRepository::update_name(pool.get_ref(), folder_id, user.user_id, &body.folder_name)
+    match FolderRepository::update_name(pool.get_ref(), folder_id, user.user_id, &request.folder_name)
         .await
     {
         Ok(Some(folder)) => {

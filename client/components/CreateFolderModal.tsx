@@ -7,9 +7,11 @@ import {
                     StyleSheet,
                     Modal,
                     ActivityIndicator,
+                    Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/config';
+import { validateFolderName } from '@/utils/validation';
 
 interface CreateFolderModalProps {
                     visible: boolean;
@@ -22,7 +24,11 @@ export default function CreateFolderModal({ visible, onClose, onSubmit }: Create
                     const [isSubmitting, setIsSubmitting] = useState(false);
 
                     const handleSubmit = async () => {
-                                        if (!folderName.trim()) return;
+                                        const validation = validateFolderName(folderName);
+                                        if (!validation.isValid) {
+                                                            Alert.alert('Invalid Name', validation.error);
+                                                            return;
+                                        }
 
                                         setIsSubmitting(true);
                                         try {
@@ -30,7 +36,9 @@ export default function CreateFolderModal({ visible, onClose, onSubmit }: Create
                                                             setFolderName('');
                                                             onClose();
                                         } catch (error) {
+                                                            // Error handling is usually done by parent or service, but good to log here
                                                             console.error('Failed to create folder:', error);
+                                                            // Optionally alert if the error didn't come from validation
                                         } finally {
                                                             setIsSubmitting(false);
                                         }
