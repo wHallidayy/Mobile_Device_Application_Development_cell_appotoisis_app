@@ -2,14 +2,19 @@
 .env
 .env.local
 .env.*.local
+*.env
 
 # Dependencies
 node_modules/
+/server/target
+/model_worker/__pycache__
+/model_worker/venv
+/model_worker/.venv
 
-# Build outputs
-dist/
-build/
-build.log
+# Rust
+/target
+Cargo.lock
+**/*.rs.bk
 
 # Python
 __pycache__/
@@ -17,6 +22,7 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+.pytest_cache/
 
 # Docker
 *.log
@@ -36,3 +42,7 @@ Thumbs.db
 *.pth
 *.onnx
 *.h5
+
+# Build outputs
+dist/
+build/
